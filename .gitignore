@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+
+input/120-results
+*.zip
+examples/
+output/
+errors/

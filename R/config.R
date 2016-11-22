@@ -1,0 +1,51 @@
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+
+library("mlr")
+library("foreign")
+library("kernlab")
+library("dtw")
+library("e1071")
+library("R.utils")
+library("checkmate")
+library("randomForest")
+
+configureMlr(show.info = FALSE)
+
+if(!dir.exists("output")) {
+  dir.create(path = "output")
+  cat(" - Creating output folder\n")
+}
+
+#data directories
+data.dir = paste(getwd(), "input/data", sep = "/")
+hp.dir = paste0(getwd(), "/input/", ALGO, "_hp/")
+results.dir = paste(getwd(), "output", sep = "/")
+
+# loading meta-features
+load(file = paste(getwd(), "input/metaFeatures.RData", sep = "/"), verbose = TRUE)
+obj$landmarking = obj$landmarking[,-10]
+
+res.ds = gsub(x = list.files(path = data.dir), pattern = ".arff", replacement = "")
+res.hp = list.files(path = hp.dir)
+res.mf = unlist(dimnames(obj$simple)[1])
+
+# Intersection - hp + ds + mf
+COMMON.DATA = intersect(x = intersect(x = res.ds, y = res.mf), y = res.hp)
+if(length(COMMON.DATA) <= 0) {
+  stop("No datasets remained for experiments!")
+} else {
+  cat("it's ok.\n")
+}
+
+dataset.names = COMMON.DATA
+datafile.names = paste0(dataset.names, ".arff")
+
+result.matrix.column.names = c(paste(c("acc"), 1:30, sep = "."), 
+  "mean.acc", "PCA.in.ex", "PCA.gamma", "PCA.qu.hi", "PCA.bins", "MF.group.comb", "MF.dist", 
+  "DTW.MF.rv.nv", "BL.alg", "MTL.alg", "algo", "EXP.folds", "NN.k", "time.FE", "time.dist", "time.comp")
+result.matrix <<- matrix(, nrow = length(dataset.names), ncol = length(result.matrix.column.names))
+dimnames(result.matrix) = list(dataset.names, result.matrix.column.names)
+
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
