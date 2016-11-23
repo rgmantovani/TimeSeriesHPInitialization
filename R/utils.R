@@ -34,9 +34,9 @@ read.pre.process.data.pca <- function(data.file, inex) {
     target = character(0L) 
   } else { #include class, but not binarized
     target = "Class"
+    data[, target] = as.numeric(data[, target])
   }
   binarized.data = createDummyFeatures(obj = data, target = target)
-
   return(binarized.data)
 }
 

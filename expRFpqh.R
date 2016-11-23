@@ -18,6 +18,7 @@
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
+# args = c("ex", "100", "qu", "5", "pso", "3", "rv", "svm")
 ALGO = args[8]
 
 cat(" @Algorithm: ", ALGO, "\n")
@@ -36,9 +37,10 @@ cat(" @ Calculating eigenvalues \n")
 eigenvalues = list()
 for (i in 1:length(datafile.names)) {
 	
-	start.time = System$currentTimeMillis()
+  start.time = System$currentTimeMillis()
 	data.file  = paste(data.dir, datafile.names[i], sep="/")
-	pp.data    = read.pre.process.data.pca(data.file = data.file, inex = args[1])
+	# print(data.file)
+  pp.data    = read.pre.process.data.pca(data.file = data.file, inex = args[1])
 
 	gamma = as.numeric(args[2])	
 	if (gamma < -10 || gamma > 10) {
@@ -67,7 +69,8 @@ hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = args[5], 
 
 # doing predictions
 outer.aux = lapply(1:30, function(rep.id) {
-	
+# outer.aux = lapply(1:2, function(rep.id) {
+  	
 	set.seed(seed = rep.id)
   cat(" @ Repetition: ", rep.id, " ... \n")
 
