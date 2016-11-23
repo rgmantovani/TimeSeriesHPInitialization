@@ -1,5 +1,5 @@
 # Parameters:
-# args[1] = {"pso", "rs", "dfs"}  // PSO, RS, DF (w.r.t. SVM)
+# args[1] = {"pso", "rs", "df"}  // PSO, RS, DF (w.r.t. SVM)
 # args[2] = {3,5,10} // folds for cross-validation (will try only 5)
 # args[3] = {"svm", "J48"}
 # number of experiments = 3 * 1 * 2 = 6
@@ -8,7 +8,8 @@
 # Main program
 # -----------------------------------------------------------------------------
 
-args <- commandArgs(TRUE)
+args = commandArgs(TRUE)
+# args = c("df", 2, "svm") #J48
 ALGO = args[3]
 
 my.files = list.files(path = "R", full.names = TRUE)
@@ -42,15 +43,14 @@ for (i in 1:length(datafile.names)) {
       pattern = paste0(toupper(args[1]), "\\.|\\.response"), replacement = "")
     params = as.list(response)
 
-    if(args[3] == "svm") {
-      perf = runBaseLearner(datafile = datafile, algo = "svm", params = params, 
-        folds = as.numeric(args[2]), trafo = function(x) return(2^x))
-    } else if(args[3] == "J48") {
-      perf = runBaseLearner(datafile = datafile, algo = "J48", params = params, 
-        folds = as.numeric(args[2]))
+    if(ALGO == "svm") {
+      trafo = function(x) return(2^x)
     } else {
-      stop("Invalid base learner!")
+      trafo = NULL
     }
+    perf = runBaseLearner(datafile = datafile, algo = ALGO, 
+      params = params, folds = as.numeric(args[2]), trafo = trafo)
+
     return(perf)
   })
 

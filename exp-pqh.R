@@ -11,18 +11,75 @@
 #
 # number of experiments = 2*22*2*3*4*3*3*1 = 9504
 
-# suppressMessages(library(mlr))
-# suppressMessages(library(foreign))
-# suppressMessages(library(kernlab))
-# suppressMessages(library(e1071))
-# suppressMessages(library(R.utils))
+suppressMessages(library(mlr))
+suppressMessages(library(foreign))
+suppressMessages(library(kernlab))
+suppressMessages(library(e1071))
+suppressMessages(library(R.utils))
 
-# source("config.R")
-# source("utils.R")
-my.files = list.files(path = "R", full.names = TRUE)
-for(file in my.files) {
-  source(file)
-  cat(" - loading file: ", file, "\n")
+source("config.R")
+source("utils.R")
+
+# -----------------------------------------------------------------------------
+# Function definitions
+# -----------------------------------------------------------------------------
+
+# fill the parameter settings to the result.matrix
+# arg[1] = the index of the row the settings are filled to
+fill.parameter.settings <- function(ind) {
+	if (args[1] == "in") {
+		result.matrix[ind,"PCA.in.ex"] <<- 1
+	} else {
+			result.matrix[ind,"PCA.in.ex"] <<- 2
+		}
+	
+	result.matrix[ind,"PCA.gamma"] <<- as.numeric(args[2])
+	
+	if (args[3] == "qu") {
+		result.matrix[ind,"PCA.qu.hi"] <<- 1
+	} else {
+			result.matrix[ind,"PCA.qu.hi"] <<- 2	
+		}
+
+	result.matrix[ind,"PCA.bins"] <<- as.numeric(args[4])
+
+	if (args[5] == "ed") {
+		result.matrix[ind,"MF.dist"] <<- 1
+	} else {
+			if (args[5] == "ip") {
+				result.matrix[ind,"MF.dist"] <<- 2
+			} else {
+					if (args[5] == "cs") {
+						result.matrix[ind,"MF.dist"] <<- 3
+					} else {
+							result.matrix[ind,"MF.dist"] <<- 4
+						}
+				}
+		}
+
+	result.matrix[ind,"NN.k"] <<- as.numeric(args[6])
+		
+	if (args[7] == "pso") {
+		result.matrix[ind,"BL.alg"] <<- 1
+	} else {
+			if (args[7] == "rs") {
+				result.matrix[ind,"BL.alg"] <<- 2
+			} else {
+					if (args[7] == "dfs") {
+						result.matrix[ind,"BL.alg"] <<- 3
+					} else {
+							result.matrix[ind,"BL.alg"] <<- 4
+						}
+				}
+		}
+
+	result.matrix[ind,"EXP.folds"] <<- as.numeric(args[8])
+	
+	if (args[9] == "rv") {
+		result.matrix[ind,"DTW.MF.rv.nv"] <<- 1
+	} else {
+			result.matrix[ind,"DTW.MF.rv.nv"] <<- 2
+		}
 }
 
 # -----------------------------------------------------------------------------
@@ -78,8 +135,7 @@ for (i in 1:length(datafile.names)) {
 
 	result.matrix[i,"time.comp"] <- System$currentTimeMillis() - start.time
 
-  # fill.parameter.settings(i)
-  fillParamSettingsPqh(i)
+  fill.parameter.settings(i)
 }
 
 # save the result.matrix to the disk

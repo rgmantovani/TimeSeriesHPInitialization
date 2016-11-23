@@ -68,7 +68,7 @@ fillParamsDtw = function(result.matrix, args) {
 # fill the parameter settings to the result.matrix
 # arg[1] = the index of the row the settings are filled to
 fillParamsPqh = function(result.matrix, args) {
-  
+
   if (args[1] == "in") {
     result.matrix[ ,"PCA.in.ex"] = 1
   } else {
@@ -91,10 +91,7 @@ fillParamsPqh = function(result.matrix, args) {
     cs = { result.matrix[, "MF.dist"] = 3 },
          { result.matrix[, "MF.dist"] = 4 })
 
-
-  result.matrix[ , "NN.k"] = as.numeric(args[6])
-      
-  switch(args[7], 
+  switch(args[6], 
     pso  = { result.matrix[, "BL.alg"] = 1 },
     rs   = { result.matrix[, "BL.alg"] = 2 },
     dfs  = { result.matrix[, "BL.alg"] = 3 },
@@ -102,12 +99,18 @@ fillParamsPqh = function(result.matrix, args) {
            { result.matrix[, "BL.alg"] = 5 })
 
 
-  result.matrix[ , "EXP.folds"] = as.numeric(args[8])
+  result.matrix[ , "EXP.folds"] = as.numeric(args[7])
 
-  if (args[9] == "rv") {
+  if (args[8] == "rv") {
     result.matrix[ ,"DTW.MF.rv.nv"] = 1
   } else {
     result.matrix[ ,"DTW.MF.rv.nv"] = 2
+  }
+
+  if(args[9] == "svm") {
+    result.matrix[, "algo"] = 1 #svm
+  } else {
+    result.matrix[, "algo"] = 2 #J48
   }
 
   return(result.matrix)

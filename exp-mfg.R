@@ -9,6 +9,63 @@
 #
 # number of experiments = 256*2*4*3*3*1 = 18432
 
+suppressMessages(library(mlr))
+suppressMessages(library(foreign))
+suppressMessages(library(kernlab))
+suppressMessages(library(e1071))
+suppressMessages(library(R.utils))
+
+source("R/config.R")
+source("R/utils.R")
+
+# -----------------------------------------------------------------------------
+# Function definitions
+# -----------------------------------------------------------------------------
+
+# fill the parameter settings to the result.matrix
+# arg[1] = the index of the row the settings are filled to
+fill.parameter.settings <- function(ind) {
+	result.matrix[ind,"MF.group.comb"] <<- as.numeric(args[1])
+	
+	if (args[2] == "rv") {
+		result.matrix[ind,"DTW.MF.rv.nv"] <<- 1
+	} else {
+			result.matrix[ind,"DTW.MF.rv.nv"] <<- 2
+		}
+		
+	if (args[3] == "ed") {
+		result.matrix[ind,"MF.dist"] <<- 1
+	} else {
+			if (args[3] == "ip") {
+				result.matrix[ind,"MF.dist"] <<- 2
+			} else {
+					if (args[3] == "cs") {
+						result.matrix[ind,"MF.dist"] <<- 3
+					} else {
+							result.matrix[ind,"MF.dist"] <<- 4
+						}
+				}
+		}
+		
+	result.matrix[ind,"NN.k"] <<- as.numeric(args[4])
+	
+	if (args[5] == "pso") {
+		result.matrix[ind,"BL.alg"] <<- 1
+	} else {
+			if (args[5] == "rs") {
+				result.matrix[ind,"BL.alg"] <<- 2
+			} else {
+					if (args[5] == "dfs") {
+						result.matrix[ind,"BL.alg"] <<- 3
+					} else {
+							result.matrix[ind,"BL.alg"] <<- 4
+						}
+				}
+		}
+
+	result.matrix[ind,"EXP.folds"] <<- as.numeric(args[6])
+}
+
 # -----------------------------------------------------------------------------
 # Main program
 # -----------------------------------------------------------------------------
@@ -69,8 +126,6 @@ if (meta.feature.groups[8]) {
 	computation.times[,1] <- computation.times[,1]	 + obj$subGroupTimes[,"cnet_time"]
 }
 
-
-
 # normalize the feature matrix if required
 if (args[2] == "nv")
 	feature.matrix <- scale(feature.matrix)
@@ -97,15 +152,15 @@ for (i in 1:length(datafile.names)) {
 	
 	# compute results of SVM using cross-validation
 	for (j in 1:30) {
-		result.matrix[i,j] <- compute.svm.cv(datafile.names[i], aggregated.hp[j,1], aggregated.hp[j,2],
-																				 as.numeric(args[6]))
+		# result.matrix[i,j] <- compute.svm.cv(datafile.names[i], aggregated.hp[j,1], aggregated.hp[j,2],
+																				 # as.numeric(args[6]))
+		result.matrix[i,j] = runSVM(datafile.names[i], aggregated.hp[j,1], aggregated.hp[j,2], as.numeric(args[6]))
 		result.matrix[i,"mean.acc"] <- mean(result.matrix[i,c(1:30)])
 	}
 
 	result.matrix[i,"time.comp"] <- System$currentTimeMillis() - start.time
 
-  # fill.parameter.settings(i)
-  fillParamSettingsMfg(i)
+  fill.parameter.settings(i)
 }
 
 

@@ -7,18 +7,21 @@
 # args[2] = {"rv", "nv"}  // real or normalized meta-feature vectors
 # args[3] = {"ed", "ip", "cs", "pc"} // euclidean dist., inner prod., cosine sim., pearson corr.
 # args[4] = {1,2,3} // k for nearest neighbors
-# args[5] = {"pso", "rs", "dfs"}  // PSO, RS, DF (w.r.t. SVM)
+# args[5] = {"pso", "rs", "df", "smbo"}  // PSO, RS, DF SMBO
 # args[6] = {3,5,10} // folds for cross-validation (will try only 5)
 # args[7] = {"svm", "J48"} // algorithm which hyper-parameters are predicted
 
-# args <- commandArgs(TRUE)
+# -----------------------------------------------------------------------------
+# Main program
+# -----------------------------------------------------------------------------
 
-args = c("255", "rv", "ed", "1", "rs", "3", "J48")
+args = commandArgs(TRUE)
+# args = c("255", "rv", "ed", "1", "rs", "3", "J48")
 # args = c("255", "rv", "ed", "1", "rs", "3", "svm")
 ALGO = args[7]
 cat(" @Algorithm: ", ALGO, "\n")
 
-cat("Sourcering files ... \n")
+cat("Loading files ... \n")
 my.files = list.files(path = "R", full.names = TRUE)
 for(file in my.files) {
   source(file)
@@ -45,7 +48,7 @@ result.matrix[, "MTL.algo"] = 2 # 1 = k-NN, 2 = RF
 result.matrix = fillParamsMfg(result.matrix = result.matrix, args = args)
 
 # Reading HP-solutions previously found
-hp.solutions = getHPSolutions(dataset.names = dataset.names, hp.technique = args[5], algo = ALGO)
+hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = args[5], algo = ALGO)
 
 outer.aux = lapply(1:30, function(rep.id) {
 
@@ -70,14 +73,13 @@ outer.aux = lapply(1:30, function(rep.id) {
     inner.time = System$currentTimeMillis()
 
     if(ALGO == "svm") {
-      perf = runBaseLearner(datafile = datafile, algo = "svm", params = params, 
-        folds = as.numeric(args[6]), trafo = function(x) return(2^x))
-    } else if(ALGO == "J48") {
-      perf = runBaseLearner(datafile = datafile, algo = "J48", params = params, 
-        folds = as.numeric(args[6]))
+      trafo = function(x) return(2^x)
     } else {
-      stop("Invalid base learner!")
+      trafo = NULL
     }
+
+    perf = runBaseLearner(datafile = datafile, algo = ALGO, 
+      params = params, folds = as.numeric(args[6]), trafo = trafo)
  
     # QUESTION: Should I include the model time ? 
     pred.time = System$currentTimeMillis() - inner.time + model.time

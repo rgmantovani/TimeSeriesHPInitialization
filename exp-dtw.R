@@ -8,19 +8,54 @@
 #
 # number of experiments = 2*22*2*3*3*1 = 792
 
-# suppressMessages(library(mlr))
-# suppressMessages(library(foreign))
-# suppressMessages(library(kernlab))
-# suppressMessages(library(dtw))
-# suppressMessages(library(e1071))
-# suppressMessages(library(R.utils))
+suppressMessages(library(mlr))
+suppressMessages(library(foreign))
+suppressMessages(library(kernlab))
+suppressMessages(library(dtw))
+suppressMessages(library(e1071))
+suppressMessages(library(R.utils))
 
-# source("config.R")
-# source("utils.R")
-my.files = list.files(path = "R", full.names = TRUE)
-for(file in my.files) {
-  source(file)
-  cat(" - loading file: ", file, "\n")
+source("R/config.R")
+source("R/utils.R")
+
+# -----------------------------------------------------------------------------
+# Function definitions
+# -----------------------------------------------------------------------------
+
+# fill the parameter settings to the result.matrix
+# arg[1] = the index of the row the settings are filled to
+fill.parameter.settings <- function(ind) {
+	if (args[1] == "in") {
+		result.matrix[ind,"PCA.in.ex"] <<- 1
+	} else {
+			result.matrix[ind,"PCA.in.ex"] <<- 2
+		}
+	
+	result.matrix[ind,"PCA.gamma"] <<- as.numeric(args[2])
+	
+	if (args[3] == "rv") {
+		result.matrix[ind,"DTW.MF.rv.nv"] <<- 1
+	} else {
+			result.matrix[ind,"DTW.MF.rv.nv"] <<- 2	
+		}
+
+	result.matrix[ind,"NN.k"] <<- as.numeric(args[4])
+		
+	if (args[5] == "pso") {
+		result.matrix[ind,"BL.alg"] <<- 1
+	} else {
+			if (args[5] == "rs") {
+				result.matrix[ind,"BL.alg"] <<- 2
+			} else {
+					if (args[5] == "dfs") {
+						result.matrix[ind,"BL.alg"] <<- 3
+					} else {
+							result.matrix[ind,"BL.alg"] <<- 4
+						}
+				}
+		}
+
+	result.matrix[ind,"EXP.folds"] <<- as.numeric(args[6])
 }
 
 # -----------------------------------------------------------------------------
@@ -75,8 +110,7 @@ for (i in 1:length(datafile.names)) {
 
 	result.matrix[i,"time.comp"] <- System$currentTimeMillis() - start.time
 
-  # fill.parameter.settings(i)
-  fillParamSettingsDtw(i)
+  fill.parameter.settings(i)
 }
 
 # save the result.matrix to the disk

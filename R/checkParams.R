@@ -33,7 +33,7 @@ checkDTParams = function(settings) {
 
   # R (use reduce error pruning)
   for(i in 1:nrow(settings)) {
-
+   
     if(settings[i, R.id] == FALSE) {
  
       # if R = FALSE, C (pruning confidence) [0.001, 0.49], N not used

@@ -2,36 +2,43 @@
 # arg[1] = the name of the file the data are stored in
 # arg[2] = exclude ("ex") or include (e.g. "in") the class attribute 
 read.pre.process.data.pca <- function(data.file, inex) {
-  data <- read.arff(data.file)
-  feature.names <- colnames(data)
 
-  to.exclude <- vector("character")
-  to.delete <- vector("integer")
+  data = read.arff(data.file)
+  feature.names = colnames(data)
+
+  to.exclude = vector("character")
+  to.delete = vector("integer")
   
   for (j in 1:ncol(data)) {
+
     if (length(unique(data[,j])) == 1) {
-      to.delete <- append(to.delete,j,length(to.delete))
+      to.delete = append(to.delete,j,length(to.delete))
     } else {
-    		if (class(data[,j]) != "factor") {
-	      	to.exclude <- append(to.exclude,feature.names[j],length(to.exclude))
-	  		}
-			}
+   		if (class(data[,j]) != "factor") {
+	     	to.exclude = append(to.exclude,feature.names[j],length(to.exclude))
+	 		}
+		}
 	}
 			
   if (inex == "ex") {
-    to.delete <- append(to.delete,ncol(data),length(to.delete))
+    to.delete = append(to.delete, ncol(data), length(to.delete))
   }
   
   if (length(to.delete) > 0) {
-    data <- data[,-to.delete]
+    data = data[, -to.delete]
   }
-  
-  binarized.data <- createDummyFeatures(data, method = "1-of-n", exclude = to.exclude)
-  
-	return(binarized.data)
+
+  # OLD:   
+  # binarized.data = createDummyFeatures(data, method = "1-of-n", exclude = to.exclude)
+  if(inex == "ex") {
+    target = character(0L) 
+  } else { #include class, but not binarized
+    target = "Class"
+  }
+  binarized.data = createDummyFeatures(obj = data, target = target)
+
+  return(binarized.data)
 }
-
-
 
 # computing the distance matrix using DTW
 # arg[1] = list of eigenvalues computed from pca
