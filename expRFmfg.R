@@ -5,23 +5,20 @@
 # args[1] = {1, 2, ..., 256} // meta-feature group combination corresponding to
 #           {"sl", "st", "it", "lm", "mb", "ti", "dc", "cn"}
 # args[2] = {"rv", "nv"}  // real or normalized meta-feature vectors
-# args[3] = {"ed", "ip", "cs", "pc"} // euclidean dist., inner prod., cosine sim., pearson corr.
-# args[4] = {1,2,3} // k for nearest neighbors
-# args[5] = {"pso", "rs", "df", "smbo"}  // PSO, RS, DF SMBO
-# args[6] = {3,5,10} // folds for cross-validation (will try only 5)
-# args[7] = {"svm", "J48"} // algorithm which hyper-parameters are predicted
+# args[3] = {"pso", "rs", "df", "smbo"}  // PSO, RS, DF SMBO
+# args[4] = {3,5,10} // folds for cross-validation (will try only 5)
+# args[5] = {"svm", "J48"} // algorithm which hyper-parameters are predicted
 
-# -----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # Main program
-# -----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
-# args = c("255", "rv", "ed", "1", "rs", "3", "J48")
-# args = c("255", "rv", "ed", "1", "rs", "3", "svm")
-ALGO = args[7]
-cat(" @Algorithm: ", ALGO, "\n")
+ALGO = args[5]
 
+cat(" @Algorithm: ", ALGO, "\n")
 cat("Loading files ... \n")
+
 my.files = list.files(path = "R", full.names = TRUE)
 for(file in my.files) {
   source(file)
@@ -44,30 +41,28 @@ if (args[2] == "nv") {
   feature.matrix = ret$feature.matrix[sel.ids, ]
 }
 result.matrix[, "time.FE"] = ret$computation.times[sel.ids]
-result.matrix[, "MTL.algo"] = 2 # 1 = k-NN, 2 = RF
-result.matrix = fillParamsMfg(result.matrix = result.matrix, args = args)
+result.matrix[, "MTL.alg"] = 2 # 1 = k-NN, 2 = RF
 
-# Reading HP-solutions previously found
-hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = args[5], algo = ALGO)
+cat(" @ Retrieving HP solutions \n")
+result.matrix = fillParamsMfg(result.matrix = result.matrix, args = args)
+hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = args[3], algo = ALGO)
 
 outer.aux = lapply(1:30, function(rep.id) {
 
+  set.seed(seed = rep.id)
   cat(" @ Repetition: ", rep.id, " ... \n")
+ 
   targets = do.call("rbind", lapply(hp.solutions, function(pos) return(pos[rep.id, ])))
-  
-  start.time = System$currentTimeMillis()
   hp.predicted = multitargetRF(feature.matrix = feature.matrix, targets = targets)
-  model.time = System$currentTimeMillis() - start.time
-
+ 
   inner.aux = lapply(1:length(datafile.names), function(i) {
 
     datafile = datafile.names[i]
-   
-    # Getting predicted parameters and formating them to be a list
-    hp.setting = hp.predicted[i, ]
+    hp.setting = hp.predicted[i,]
+  
     response = hp.setting[grepl(pattern = "response", x = colnames(hp.setting))]
     colnames(response) = gsub(x = colnames(response), 
-      pattern = paste0(toupper(args[5]), "\\.|\\.response"), replacement = "")
+      pattern = paste0(toupper(args[3]), "\\.|\\.response"), replacement = "")
     params = as.list(response)
    
     inner.time = System$currentTimeMillis()
@@ -79,10 +74,9 @@ outer.aux = lapply(1:30, function(rep.id) {
     }
 
     perf = runBaseLearner(datafile = datafile, algo = ALGO, 
-      params = params, folds = as.numeric(args[6]), trafo = trafo)
+      params = params, folds = as.numeric(args[4]), trafo = trafo)
  
-    # QUESTION: Should I include the model time ? 
-    pred.time = System$currentTimeMillis() - inner.time + model.time
+    pred.time = System$currentTimeMillis() - inner.time
     return(c(perf, pred.time))
   })
 
@@ -100,7 +94,7 @@ colnames(accs) = paste0("acc.", 1:ncol(accs))
 result.matrix[ , 1:ncol(accs)] = accs
 result.matrix[, "mean.acc"] = rowMeans(accs)
 
-# save the result.matrix to the disk
+cat(" - Saving results \n")
 file.name = paste(paste("expRFMfg",paste("-", args, sep="", collapse=""),sep=""), "rda", sep=".")
 dput(result.matrix, file = paste(results.dir,file.name,sep="/"))
 

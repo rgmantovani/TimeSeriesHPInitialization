@@ -3,5 +3,5 @@
 #$ -cwd
 #$ -N drp
 
-Rscript exp-drp.R $1 $2
+Rscript expDrp.R $1 $2 $3
 
