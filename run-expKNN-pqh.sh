@@ -18,7 +18,10 @@ do
 							do
 								for i in "rv" "nv"
 								do
-									qsub run-job-pqh.sh $a $b $c $d $e $f $g $h $i
+									for j in "svm" "J48"
+									do
+										qsub run-job-expKNN-pqh.sh $a $b $c $d $e $f $g $h $i $j
+									done
 								done
 							done
 						done

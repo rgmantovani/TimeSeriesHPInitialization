@@ -14,7 +14,7 @@
 # number of experiments = 2*22*2*3*4*3*3*1 = 9504 * 2
 
 #--------------------------------------------------------------------------------------------------
-# Main program
+# Fucntion definitions
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
@@ -23,13 +23,18 @@ ALGO = args[8]
 
 cat(" @Algorithm: ", ALGO, "\n")
 cat("Loading files ... \n")
+
 my.files = list.files(path = "R", full.names = TRUE)
 for(file in my.files) {
   source(file)
   cat(" - file: ", file, "\n")
 }
 
-result.matrix = fillParamsPqh(result.matrix = result.matrix, args = args)
+# -----------------------------------------------------------------------------
+# Main program
+# -----------------------------------------------------------------------------
+
+result.matrix = fillParamsPqhRF(result.matrix = result.matrix, args = args)
 result.matrix[ , "MTL.alg"] = 2 # 1 for kNN, 2 for RF
 
 # for each dataset compute PCA/KPCA after binarizing them

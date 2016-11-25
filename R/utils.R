@@ -1,3 +1,5 @@
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # reading and pre-processing an already (standardized) dataset for PCA
 # arg[1] = the name of the file the data are stored in
 # arg[2] = exclude ("ex") or include (e.g. "in") the class attribute 
@@ -40,6 +42,8 @@ read.pre.process.data.pca <- function(data.file, inex) {
   return(binarized.data)
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # computing the distance matrix using DTW
 # arg[1] = list of eigenvalues computed from pca
 # arg[2] = classical distance ("rv") or normalized (e.g. "nv")
@@ -74,8 +78,8 @@ compute.distance.matrix.dtw <- function(input.data, rv.nv) {
   return(result)
 }
 
-
-
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # orders other datasets according to their distance (nearest first) to the given dataset
 # arg[1] = the number of the dataset in the list of dataset names
 # arg[2] = the distance matrix
@@ -98,41 +102,47 @@ compute.k.nn <- function(dataset.number, distances, k) {
 }
 
 
-
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # get the best hyper-parameters for the given dataset
 # arg[1] = datasets from the nearest neighbor list
 # arg[2] = the tuning method according to which the best hyper-parameters are delivered
 #					 i.e. "pso", "rs", "dfs"
 # arg[3] = the number of nearest neighbors the results are aggregated for 
 #					 (basically, the length of arg[1])
+
+# TODO: adapt here to run with DT data
+
 get.aggregated.best.hp <- function(datasets.to.consider, hp.tuning, k) {
-	res <- matrix(0, nrow=30, ncol=2)
+	
+  res = matrix(0, nrow=30, ncol=2)
 	
 	for (i in 1:length(datasets.to.consider)) {
-		directory <- paste(hp.dir,datasets.to.consider[i],sep="/")
+		
+    directory = paste(hp.dir,datasets.to.consider[i],sep="/")
 		
 		for (j in 1:30) {
-			hp.file <- paste(directory, paste(paste(datasets.to.consider[i],j,sep="-"), 
-										"RData", sep="."), sep="/")
-			best.hp.j <- dget(file = hp.file, keep.source = TRUE)
+			hp.file = paste(directory, paste(paste(datasets.to.consider[i],j,sep="-"), "RData", sep="."), sep="/")
+			best.hp.j = dget(file = hp.file, keep.source = TRUE)
 			
 			if (hp.tuning == "pso") {
-				res[j,] <- res[j,] + c(best.hp.j[11,"PSO.cost"], best.hp.j[11,"PSO.gamma"])
+				res[j,] = res[j,] + c(best.hp.j[11,"PSO.cost"], best.hp.j[11,"PSO.gamma"])
 			} else {
-					if (hp.tuning == "rs") {
-						res[j,] <- res[j,] + c(best.hp.j[11,"RS.cost"], best.hp.j[11,"RS.gamma"])
-					} else {
-							if (hp.tuning == "dfs") {
-								res[j,] <- res[j,] + c(best.hp.j[11,"DF.cost"], best.hp.j[11,"DF.gamma"])
-							}
-						}
+				if (hp.tuning == "rs") {
+					res[j,] = res[j,] + c(best.hp.j[11,"RS.cost"], best.hp.j[11,"RS.gamma"])
+				} else {
+					if (hp.tuning == "df") {
+						res[j,] = res[j,] + c(best.hp.j[11,"DF.cost"], best.hp.j[11,"DF.gamma"])
+					}
 				}
+			}
 		}
 	}
-	
+
 	return(res/k)
 }
-
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 
 
 # compute the balanced classification accuracy (based on Rafael's code)
@@ -146,7 +156,7 @@ compute.balanced.accuracy <- function(pred, test){
 		balanced.acc <- mean(m$byClass[,8])
 	} else {
 			balanced.acc <- m$byClass[8]
-		}
+	}
 	
 	if (is.na(balanced.acc)) {
 	  balanced.acc <- m$overall[1]
@@ -155,6 +165,8 @@ compute.balanced.accuracy <- function(pred, test){
 	return(balanced.acc)
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 
 # perform cross-validation (using SVM) ad compute average balanced accuracy on folds
 # arg[1] = the name of the data file
@@ -191,8 +203,9 @@ compute.svm.cv <- function(datafile, svm.cost, svm.gamma, folds) {
   return(value)
 }
 
-
-
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+#
 # compute histograms of proportion of variance
 # arg[1] = input vector of eigenvalues
 # arg[2] = number of bins
@@ -209,7 +222,8 @@ find.histogram <- function(input.data, bins, rv.nv) {
 		}
 }
 
-
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 
 # compute the indices of pc explaining different quantiles of variance
 # arg[1] = input vector of eigenvalues
@@ -246,33 +260,45 @@ find.quantiles <- function(input.data, quantiles, rv.nv) {
 		}
 }
 
-
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 
 # computes the euclidean distance of the two vectors in the arguments
 euclidean.distance <- function(vector.i, vector.j) {
 	return( sqrt(sum((vector.i - vector.j)^2)) )
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+
 # computes the inner product of the two vectors in the arguments
 inner.product <- function(vector.i, vector.j) {
   return( sum(vector.i * vector.j) )
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # computes the norm of the vector in the argument
 vector.norm <- function(vector) {
   return( sqrt(sum(vector^2)) )
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # computes the cosine similarity of the two vectors in the arguments
 cosine.similarity <- function(vector.i, vector.j) {
   return( inner.product(vector.i, vector.j) / (vector.norm(vector.i) * vector.norm(vector.j)) )
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # computes the pearson correlation of the two vectors in the arguments
 pearson.correlation <- function(vector.i, vector.j) {
   return( cosine.similarity(vector.i - mean(vector.i), vector.j - mean(vector.j)) )
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # computes distance of the two vectors in the arguments according to the given distace measure
 compute.distance <- function(vector.i, vector.j, distance.measure) {
 	if (distance.measure == "ed") {
@@ -294,6 +320,8 @@ compute.distance <- function(vector.i, vector.j, distance.measure) {
 		}
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # computing the distance matrix from quantiles or histograms
 # arg[1] = list of eigenvvalues computed from pca
 # arg[2] = quantiles ("qu") or histograms (e.g. "hi") should be considered
@@ -334,6 +362,8 @@ compute.distance.matrix.qu.hi <- function(input.data, qu.hi, num.bins, distance.
 }
 
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # converts an integer to a boolean vector corresponding to its binary representation
 convert.mf.group.combination.to.vector <- function (number, num.bits = 8) {
 #  return( rev(as.logical(intToBits(number))[1:num.bits]) )
@@ -342,6 +372,8 @@ convert.mf.group.combination.to.vector <- function (number, num.bits = 8) {
 
 
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 # computing the distance matrix from quantiles or histograms
 # arg[1] = matrix of meta-features (row represents datasets, column represents meta-features)
 # arg[2] = the distance measure used, i.e. "ed", "ip", "cs", "pc"
@@ -366,3 +398,5 @@ compute.distance.matrix.mf.vectors <- function(input.data, distance.measure) {
   return(result)
 }
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------

@@ -10,8 +10,9 @@
 # args[5] = {"svm", "J48"} // algorithm which hyper-parameters are predicted
 
 #--------------------------------------------------------------------------------------------------
-# Main program
+# Fucntion definitions
 #--------------------------------------------------------------------------------------------------
+
 
 args = commandArgs(TRUE)
 ALGO = args[5]
@@ -25,10 +26,11 @@ for(file in my.files) {
   cat(" - file: ", file, "\n")
 }
 
-meta.feature.groups = convert.mf.group.combination.to.vector(as.numeric(args[1]))
-computation.times = matrix(0, nrow = length(COMMON.DATA), ncol = 1)
-dimnames(computation.times) = list(COMMON.DATA, NULL)
+#--------------------------------------------------------------------------------------------------
+# Main program
+#--------------------------------------------------------------------------------------------------
 
+meta.feature.groups = convert.mf.group.combination.to.vector(as.numeric(args[1]))
 ret = getComputationTimes(meta.feature.groups = meta.feature.groups, obj = obj)
 sel.ids = which(rownames(ret$feature.matrix) %in% COMMON.DATA)
 
@@ -41,10 +43,9 @@ if (args[2] == "nv") {
   feature.matrix = ret$feature.matrix[sel.ids, ]
 }
 result.matrix[, "time.FE"] = ret$computation.times[sel.ids]
-result.matrix[, "MTL.alg"] = 2 # 1 = k-NN, 2 = RF
 
 cat(" @ Retrieving HP solutions \n")
-result.matrix = fillParamsMfg(result.matrix = result.matrix, args = args)
+result.matrix = fillParamsMfgRF(result.matrix = result.matrix, args = args)
 hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = args[3], algo = ALGO)
 
 outer.aux = lapply(1:30, function(rep.id) {

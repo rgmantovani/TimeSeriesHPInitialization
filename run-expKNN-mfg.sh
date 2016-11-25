@@ -12,7 +12,10 @@ do
 				do
 					for f in 5
 					do
-						qsub run-job-mfg.sh $a $b $c $d $e $f
+						for g in "svm" "J48"
+						do
+							qsub run-job-expKNN-mfg.sh $a $b $c $d $e $f $g
+						done
 					done
 				done
 			done
