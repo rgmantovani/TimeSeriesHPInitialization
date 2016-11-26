@@ -13,9 +13,15 @@
 # Fucntion definitions
 #--------------------------------------------------------------------------------------------------
 
-
 args = commandArgs(TRUE)
-ALGO = args[5]
+# args = c("1", "rv", "pso", "3", "svm")
+# args = c("1", "rv", "rs", "3", "J48")
+
+GROUPS    = as.numeric(args[1])
+RV.NV     = args[2]
+HP.TUNING = args[3]
+FOLDS     = as.numeric(args[4])
+ALGO      = args[5]
 
 cat(" @Algorithm: ", ALGO, "\n")
 cat("Loading files ... \n")
@@ -30,12 +36,12 @@ for(file in my.files) {
 # Main program
 #--------------------------------------------------------------------------------------------------
 
-meta.feature.groups = convert.mf.group.combination.to.vector(as.numeric(args[1]))
+meta.feature.groups = convert.mf.group.combination.to.vector(number = GROUPS)
 ret = getComputationTimes(meta.feature.groups = meta.feature.groups, obj = obj)
 sel.ids = which(rownames(ret$feature.matrix) %in% COMMON.DATA)
 
 # normalize the feature matrix if required
-if (args[2] == "nv") {
+if (RV.NV == "nv") {
   cat(" - Scaling features.\n")
   feature.matrix = scale(ret$feature.matrix[sel.ids, ])
 } else {
@@ -46,7 +52,7 @@ result.matrix[, "time.FE"] = ret$computation.times[sel.ids]
 
 cat(" @ Retrieving HP solutions \n")
 result.matrix = fillParamsMfgRF(result.matrix = result.matrix, args = args)
-hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = args[3], algo = ALGO)
+hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = HP.TUNING, algo = ALGO)
 
 outer.aux = lapply(1:30, function(rep.id) {
 
@@ -63,19 +69,19 @@ outer.aux = lapply(1:30, function(rep.id) {
   
     response = hp.setting[grepl(pattern = "response", x = colnames(hp.setting))]
     colnames(response) = gsub(x = colnames(response), 
-      pattern = paste0(toupper(args[3]), "\\.|\\.response"), replacement = "")
+      pattern = paste0(toupper(HP.TUNING), "\\.|\\.response"), replacement = "")
     params = as.list(response)
    
     inner.time = System$currentTimeMillis()
 
-    if(ALGO == "svm") {
+    if(ALGO == "svm" & HP.TUNING != "df") {
       trafo = function(x) return(2^x)
     } else {
       trafo = NULL
     }
 
-    perf = runBaseLearner(datafile = datafile, algo = ALGO, 
-      params = params, folds = as.numeric(args[4]), trafo = trafo)
+    perf = runBaseLearner(datafile = datafile, algo = ALGO, params = params, 
+      folds = FOLDS, trafo = trafo)
  
     pred.time = System$currentTimeMillis() - inner.time
     return(c(perf, pred.time))

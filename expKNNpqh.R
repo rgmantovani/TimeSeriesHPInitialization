@@ -17,8 +17,15 @@
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
-# args = c("in", "100", "qu", "5", "ed", "1", "pso", "3", "rv", "svm")
-ALGO = args[10]
+# args = c("in", "100", "qu", "5", "ed", "3", "pso", "3", "rv", "J48")
+# args = c("in", "100", "qu", "5", "ed", "3", "pso", "3", "rv", "svm")
+
+BINS 			= as.numeric(args[4])
+DIST      = args[5]
+K         = as.numeric(args[6])
+HP.TUNING = args[7]
+FOLDS     = as.numeric(args[8])
+ALGO      = args[10]
 
 cat(" @Algorithm: ", ALGO, "\n")
 cat("Loading files ... \n")
@@ -34,7 +41,6 @@ for(file in my.files) {
 # -----------------------------------------------------------------------------
 
 result.matrix = fillParamsPqhKNN(result.matrix = result.matrix, args = args)
-result.matrix[ , "MTL.alg"] = 1 # 1 for kNN, 2 for RF
 
 # for each dataset compute PCA/KPCA after binarizing them
 cat(" @ Calculating eigenvalues \n")
@@ -60,33 +66,57 @@ for (i in 1:length(datafile.names)) {
 # compute the distance matrix between datasets from eigenvalues
 cat(" @ Computing distance matrix \n")
 distance.matrix = compute.distance.matrix.qu.hi(input.data = eigenvalues, qu.hi = args[3], 
-	num.bins = as.numeric(args[4]), distance.measure = args[5], rv.nv = args[9])
+	num.bins = BINS, distance.measure = DIST, rv.nv = args[9])
 
 # for each dataset compute its k nearest neighbors from the distance matrix
 nearest.neighbors = lapply(1:length(datafile.names), function(i) {
-	nearests = compute.k.nn(dataset.number = i, distances = distance.matrix[i,], 
-		k = as.numeric(args[6]))
+	nearests = compute.k.nn(dataset.number = i, distances = distance.matrix[i,], k = K)
 	return(nearests)
 })
 
 # for each dataset
 for (i in 1:length(datafile.names)) {
 	
-	print(datafile.names[i])
-	start.time = System$currentTimeMillis()
+	cat(i, "/", length(datafile.names), " - Dataset: ", dataset.names[i], "\n")
+  datafile = datafile.names[i]
 	
 	# aggregate the best found hyper-parameters of the nearest neighbors
-	aggregated.hp = get.aggregated.best.hp(datasets.to.consider = nearest.neighbors[[i]], 
-		hp.tuning = args[7], k = as.numeric(args[6]))
-	
+	params = getHPSolutions(datasets = nearest.neighbors[[i]], 
+		hp.technique = HP.TUNING, algo = ALGO)
+  aggr.params = aggregateHyperParams(params = params, algo = ALGO)
+
 	# compute results of SVM using cross-validation
-	for (j in 1:30) {
-		set.seed(j)
-		result.matrix[i,j] = runSVM(datafile = datafile.names[i], svm.cost = aggregated.hp[j,1], 
-			svm.gamma = aggregated.hp[j,2], folds = as.numeric(args[8]))
-		result.matrix[i,"mean.acc"] = mean(result.matrix[i,c(1:30)])
-	}
-	result.matrix[i,"time.comp"] = System$currentTimeMillis() - start.time
+  cat("/")
+  tmp = lapply(1:30, function(rep.id) {
+    set.seed(rep.id)
+    cat("=")
+    hp.setting = aggr.params[rep.id, ]
+    response = hp.setting[grepl(pattern = "response", x = colnames(aggr.params))]
+    
+    names(response) = gsub(x = names(response), 
+      pattern = paste0(toupper(HP.TUNING), "\\.|\\.response"), replacement = "")
+
+    params = as.list(response)
+    inner.time = System$currentTimeMillis()
+
+    if(ALGO == "svm" & HP.TUNING != "df") {
+      trafo = function(x) return(2^x)
+    } else {
+      trafo = NULL
+    }
+
+    perf = runBaseLearner(datafile = datafile, algo = ALGO, 
+      params = params, folds = FOLDS, trafo = trafo)
+ 
+    pred.time = System$currentTimeMillis() - inner.time
+    return(c(perf, pred.time))
+  })
+  cat("/\n")
+
+  results = do.call("rbind", tmp)
+  result.matrix[i, 1:30] = results[,1]
+  result.matrix[i, "mean.acc"] = mean(results[,1]) 
+  result.matrix[i, "time.comp"] = mean(results[,2]) 
 }
 
 # save the result.matrix to the disk
@@ -94,3 +124,5 @@ cat(" - Saving results \n")
 file.name = paste(paste("expKNNpqh",paste("-", args, sep="", collapse=""),sep=""), "rda", sep=".")
 dput(result.matrix, file = paste(results.dir,file.name,sep="/"))
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------

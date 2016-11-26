@@ -119,10 +119,11 @@ get.aggregated.best.hp <- function(datasets.to.consider, hp.tuning, k) {
 	
 	for (i in 1:length(datasets.to.consider)) {
 		
-    directory = paste(hp.dir,datasets.to.consider[i],sep="/")
+    directory = paste(hp.dir, datasets.to.consider[i], sep = "/")
 		
 		for (j in 1:30) {
-			hp.file = paste(directory, paste(paste(datasets.to.consider[i],j,sep="-"), "RData", sep="."), sep="/")
+
+			hp.file = paste(directory, paste(paste(datasets.to.consider[i],j, sep = "-"), "RData", sep="."), sep="/")
 			best.hp.j = dget(file = hp.file, keep.source = TRUE)
 			
 			if (hp.tuning == "pso") {
@@ -369,8 +370,6 @@ convert.mf.group.combination.to.vector <- function (number, num.bits = 8) {
 #  return( rev(as.logical(intToBits(number))[1:num.bits]) )
 	return( as.logical(intToBits(number))[1:num.bits] )
 }
-
-
 
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------

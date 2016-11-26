@@ -38,7 +38,9 @@ checkDTParams = function(settings) {
  
       # if R = FALSE, C (pruning confidence) [0.001, 0.49], N not used
       settings[i, N.id] = NA 
-      if(settings[i, C.id] < 0.001) {
+      if(is.na(settings[i, C.id])) {
+        settings[i, C.id] = 0.25
+      } else if(settings[i, C.id] < 0.001) {
         settings[i, C.id] = 0.001
       } else if(settings[i, C.id] > 0.49) {
         settings[i, C.id] = 0.49
@@ -47,9 +49,9 @@ checkDTParams = function(settings) {
     } else {
       # if R = TRUE, N (number of folds reduced) [2, 10], C not used, N default = 3
        settings[i, C.id] = NA 
-      if(settings[i, N.id] == "New.level") {
+      if(is.na(settings[i, N.id]) | settings[i, N.id] == "New.level") {
         settings[i, N.id] = 3
-      }
+      } 
     }
   }
 

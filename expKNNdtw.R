@@ -14,8 +14,13 @@
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
-# args = c("in", "100", "rv", "1", "pso", "3", "svm")
-ALGO = args[7]
+# args = c("in", "100", "rv", "3", "df", "3", "svm")
+# args = c("in", "100", "nv", "3", "rs", "3", "J48")
+
+K         = as.numeric(args[4])
+HP.TUNING = args[5]
+FOLDS     = as.numeric(args[6])
+ALGO      = args[7]
 
 cat(" @Algorithm: ", ALGO, "\n")
 cat("Loading files ... \n")
@@ -59,32 +64,58 @@ distance.matrix = compute.distance.matrix.dtw(input.data = eigenvalues, rv.nv = 
 
 # for each dataset compute its k nearest neighbors from the distance matrix
 nearest.neighbors = lapply(1:length(datafile.names), function(i) {
-	nearests = compute.k.nn(dataset.number = i, distances = distance.matrix[i,], 
-		k = as.numeric(args[4]))
+	nearests = compute.k.nn(dataset.number = i, distances = distance.matrix[i,], k = K)
 	return(nearests)
 })
 
 # for each dataset
 for (i in 1:length(datafile.names)) {
 	
-	print(datafile.names[i])
-	start.time = System$currentTimeMillis()
+	cat(i, "/", length(datafile.names), " - Dataset: ", dataset.names[i], "\n")
+	datafile = datafile.names[i]
 		
 	# aggregate the best found hyper-parameters of the nearest neighbors
-	aggregated.hp = get.aggregated.best.hp(datasets.to.consider = nearest.neighbors[[i]], 
-		hp.tuning = args[5], k = as.numeric(args[4]))
+	params = getHPSolutions(datasets = nearest.neighbors[[i]], 
+		hp.technique = HP.TUNING, algo = ALGO)
+  aggr.params = aggregateHyperParams(params = params, algo = ALGO)
 
 	# compute results of SVM using cross-validation
-	for (j in 1:30) {
-		set.seed(j)
-		result.matrix[i,j] = runSVM(datafile = datafile.names[i], svm.cost = aggregated.hp[j,1], 
-			svm.gamma = aggregated.hp[j,2], folds = as.numeric(args[6]))
-		result.matrix[i,"mean.acc"] <- mean(result.matrix[i,c(1:30)])
-	}
-	result.matrix[i,"time.comp"] <- System$currentTimeMillis() - start.time
+	cat("/")
+  tmp = lapply(1:30, function(rep.id) {
+    set.seed(rep.id)
+    cat("=")
+    hp.setting = aggr.params[rep.id, ]
+    response = hp.setting[grepl(pattern = "response", x = colnames(aggr.params))]
+    
+    names(response) = gsub(x = names(response), 
+      pattern = paste0(toupper(HP.TUNING), "\\.|\\.response"), replacement = "")
+
+    params = as.list(response)
+    inner.time = System$currentTimeMillis()
+
+    if(ALGO == "svm" & HP.TUNING != "df") {
+      trafo = function(x) return(2^x)
+    } else {
+      trafo = NULL
+    }
+
+    perf = runBaseLearner(datafile = datafile, algo = ALGO, 
+      params = params, folds = FOLDS, trafo = trafo)
+ 
+    pred.time = System$currentTimeMillis() - inner.time
+    return(c(perf, pred.time))
+  })
+  cat("/\n")
+  
+	results = do.call("rbind", tmp)
+  result.matrix[i, 1:30] = results[,1]
+  result.matrix[i, "mean.acc"] = mean(results[,1]) 
+  result.matrix[i, "time.comp"] = mean(results[,2]) 
 }
 
 # save the result.matrix to the disk
 file.name = paste(paste("expKNNdtw",paste("-", args, sep="", collapse=""),sep=""), "rda", sep=".")
 dput(result.matrix, file = paste(results.dir,file.name,sep="/"))
 
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------

@@ -7,17 +7,27 @@
 # number of experiments = 3 * 1 * 2 = 6
 
 #--------------------------------------------------------------------------------------------------
-# Main program
+# Fucntion definitions
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
-ALGO = args[3]
+
+HP.TUNING = args[1]
+FOLDS     = as.numeric(args[2])
+ALGO      = args[3]
+
+cat(" @Algorithm: ", ALGO, "\n")
+cat("Loading files ... \n")
 
 my.files = list.files(path = "R", full.names = TRUE)
 for(file in my.files) {
   source(file)
-  cat(" - loading file: ", file, "\n")
+  cat(" - file: ", file, "\n")
 }
+
+#--------------------------------------------------------------------------------------------------
+# Main program
+#--------------------------------------------------------------------------------------------------
 
 # Filling parameters to the result matrix
 result.matrix = fillParamsDrp(result.matrix = result.matrix, args = args)
@@ -29,7 +39,7 @@ for (i in 1:length(datafile.names)) {
   cat(i,"/", length(datafile.names), "-", datafile,"\n")
   
   settings = getHPSolutions(datasets = dataset.names[i], 
-    hp.technique = args[1], algo = args[3])[[1]]
+    hp.technique = HP.TUNING, algo = ALGO)[[1]]
 
   colnames(settings) = paste(colnames(settings), "response", sep=".")  
   aggregated.hp = checkParams(settings = settings, algo = args[3])
@@ -39,21 +49,21 @@ for (i in 1:length(datafile.names)) {
   aux = lapply(1:30, function(j) {
 
     cat("=")
-    set.seed(j) # seed = rep id
+    set.seed(j)
     response = aggregated.hp[j, ]
     names(response) = gsub(x = names(response), 
-      pattern = paste0(toupper(args[1]), "\\.|\\.response"), replacement = "")
+      pattern = paste0(toupper(HP.TUNING), "\\.|\\.response"), replacement = "")
     params = as.list(response)
     
     inner.time = System$currentTimeMillis()
 
-    if(ALGO == "svm") {
+    if(ALGO == "svm" & HP.TUNING != "df") {
       trafo = function(x) return(2^x)
     } else {
       trafo = NULL
     }
     perf = runBaseLearner(datafile = datafile, algo = ALGO, 
-      params = params, folds = as.numeric(args[2]), trafo = trafo)
+      params = params, folds = FOLDS, trafo = trafo)
 
     pred.time = System$currentTimeMillis() - inner.time
 
