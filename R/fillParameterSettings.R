@@ -1,6 +1,4 @@
-
 # -----------------------------------------------------------------------------
-# Function definitions
 # -----------------------------------------------------------------------------
 
 # fill the parameter settings to the result.matrix
@@ -20,7 +18,6 @@ fillParamsDrp = function(result.matrix, args) {
 }
 
 # -----------------------------------------------------------------------------
-# Function definitions
 # -----------------------------------------------------------------------------
 
 # fill the parameter settings to the result.matrix
@@ -46,7 +43,6 @@ fillParamsDtw = function(result.matrix, args) {
 }
 
 # -----------------------------------------------------------------------------
-# Function definitions
 # -----------------------------------------------------------------------------
 
 # fill the parameter settings to the result.matrix

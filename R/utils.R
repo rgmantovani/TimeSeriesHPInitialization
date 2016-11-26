@@ -3,6 +3,7 @@
 # reading and pre-processing an already (standardized) dataset for PCA
 # arg[1] = the name of the file the data are stored in
 # arg[2] = exclude ("ex") or include (e.g. "in") the class attribute 
+
 read.pre.process.data.pca <- function(data.file, inex) {
 
   data = read.arff(data.file)
@@ -12,15 +13,14 @@ read.pre.process.data.pca <- function(data.file, inex) {
   to.delete = vector("integer")
   
   for (j in 1:ncol(data)) {
-
     if (length(unique(data[,j])) == 1) {
       to.delete = append(to.delete,j,length(to.delete))
     } else {
-   		if (class(data[,j]) != "factor") {
-	     	to.exclude = append(to.exclude,feature.names[j],length(to.exclude))
-	 		}
-		}
-	}
+      if (class(data[,j]) != "factor") {
+        to.exclude = append(to.exclude,feature.names[j],length(to.exclude))
+      }
+    }
+  }
 			
   if (inex == "ex") {
     to.delete = append(to.delete, ncol(data), length(to.delete))
@@ -52,26 +52,24 @@ compute.distance.matrix.dtw <- function(input.data, rv.nv) {
   dimnames(result) <- list(dataset.names,dataset.names)
 
   for (i in 1:length(input.data)) {
-  	start.time <- System$currentTimeMillis()
+    start.time <- System$currentTimeMillis()
 
-		vect.i <- input.data[[i]]/sum(input.data[[i]])
+    vect.i <- input.data[[i]]/sum(input.data[[i]])
   	  	
     for (j in 1:length(input.data)) {
       if (j != i) {
-   			vect.j <- input.data[[j]]/sum(input.data[[i]])
-
-		    dtw.dist <- dtw(vect.i,vect.j,distance.only=TRUE);
+        vect.j <- input.data[[j]]/sum(input.data[[i]])
+        dtw.dist <- dtw(vect.i,vect.j,distance.only=TRUE)
       
-		    if (rv.nv == "rv") {
-					result[i,j] <- dtw.dist$distance
-		    } else {
-		      	result[i,j] <- dtw.dist$normalizedDistance
-		      }
+	if (rv.nv == "rv") {
+	  result[i,j] <- dtw.dist$distance
+        } else {
+          result[i,j] <- dtw.dist$normalizedDistance
+        }
       } else {
-      		result[i,j] <- 0
-      	}
-    }
-        
+        result[i,j] <- 0
+      }
+    }       
     result.matrix[i,"time.dist"] <<- System$currentTimeMillis() - start.time
   }
 
@@ -85,22 +83,19 @@ compute.distance.matrix.dtw <- function(input.data, rv.nv) {
 # arg[2] = the distance matrix
 # arg[3] = the number of nearest neighbors
 compute.k.nn <- function(dataset.number, distances, k) {
-	result <- vector(mode="character", length=k)
-	
-	sorted.list <- sort(distances, method="shell", index.return=TRUE)
+  result <- vector(mode="character", length=k)
+  sorted.list <- sort(distances, method="shell", index.return=TRUE)
 
   i <- j <- 1
-	while (i <= k) {
-		if (dataset.names[dataset.number] != dataset.names[sorted.list$ix[j]]) {
-			result[i] <- dataset.names[sorted.list$ix[j]]
-			i <- i + 1
-		}
-		j <- j + 1
-	}  
-	
-	return(result)
+  while (i <= k) {
+    if (dataset.names[dataset.number] != dataset.names[sorted.list$ix[j]]) {
+      result[i] <- dataset.names[sorted.list$ix[j]]
+      i <- i + 1
+    }
+    j <- j + 1
+  }  
+  return(result)
 }
-
 
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
@@ -117,31 +112,30 @@ get.aggregated.best.hp <- function(datasets.to.consider, hp.tuning, k) {
 	
   res = matrix(0, nrow=30, ncol=2)
 	
-	for (i in 1:length(datasets.to.consider)) {
+  for (i in 1:length(datasets.to.consider)) {
 		
     directory = paste(hp.dir, datasets.to.consider[i], sep = "/")
 		
-		for (j in 1:30) {
-
-			hp.file = paste(directory, paste(paste(datasets.to.consider[i],j, sep = "-"), "RData", sep="."), sep="/")
-			best.hp.j = dget(file = hp.file, keep.source = TRUE)
+    for (j in 1:30) {
+      hp.file = paste(directory, paste(paste(datasets.to.consider[i],j, sep = "-"), "RData", sep="."), sep="/")
+      best.hp.j = dget(file = hp.file, keep.source = TRUE)
 			
-			if (hp.tuning == "pso") {
-				res[j,] = res[j,] + c(best.hp.j[11,"PSO.cost"], best.hp.j[11,"PSO.gamma"])
-			} else {
-				if (hp.tuning == "rs") {
-					res[j,] = res[j,] + c(best.hp.j[11,"RS.cost"], best.hp.j[11,"RS.gamma"])
-				} else {
-					if (hp.tuning == "df") {
-						res[j,] = res[j,] + c(best.hp.j[11,"DF.cost"], best.hp.j[11,"DF.gamma"])
-					}
-				}
-			}
-		}
-	}
-
-	return(res/k)
+      if (hp.tuning == "pso") {
+        res[j,] = res[j,] + c(best.hp.j[11,"PSO.cost"], best.hp.j[11,"PSO.gamma"])
+      } else {
+        if (hp.tuning == "rs") {
+          res[j,] = res[j,] + c(best.hp.j[11,"RS.cost"], best.hp.j[11,"RS.gamma"])
+        } else {
+	  if (hp.tuning == "df") {
+	    res[j,] = res[j,] + c(best.hp.j[11,"DF.cost"], best.hp.j[11,"DF.gamma"])
+	  }
+        }
+      }
+    }
+  }
+  return(res/k)
 }
+
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
 
@@ -150,20 +144,19 @@ get.aggregated.best.hp <- function(datasets.to.consider, hp.tuning, k) {
 # arg[1] = predicted classes
 # arg[2] = real classes
 compute.balanced.accuracy <- function(pred, test){
-	pred <- factor(pred, levels=levels(test))
-	m <- caret::confusionMatrix(pred, test)
+  pred <- factor(pred, levels=levels(test))
+  m <- caret::confusionMatrix(pred, test)
 
-	if (length(levels(test)) > 2) {
-		balanced.acc <- mean(m$byClass[,8])
-	} else {
-			balanced.acc <- m$byClass[8]
-	}
+  if (length(levels(test)) > 2) {
+    balanced.acc <- mean(m$byClass[,8])
+  } else {
+    balanced.acc <- m$byClass[8]
+  }
 	
-	if (is.na(balanced.acc)) {
-	  balanced.acc <- m$overall[1]
-	}
-	
-	return(balanced.acc)
+  if (is.na(balanced.acc)) {
+    balanced.acc <- m$overall[1]
+  }
+  return(balanced.acc)
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -175,7 +168,7 @@ compute.balanced.accuracy <- function(pred, test){
 # arg[3] = the gamma parameter for SVM
 # arg[4] = the number of folds for cross-validation
 compute.svm.cv <- function(datafile, svm.cost, svm.gamma, folds) {
-	data <- read.arff(paste(data.dir,datafile,sep="/"))
+  data <- read.arff(paste(data.dir,datafile,sep="/"))
   result <- vector("numeric")
   
   summed.accuracy <- 0
@@ -183,22 +176,20 @@ compute.svm.cv <- function(datafile, svm.cost, svm.gamma, folds) {
   
   for (i in 1:folds) {
     from <- ceiling(nrow(data)*((i-1)/folds))+1
-  	to <- ceiling(nrow(data)*(i/folds))
-		range <- c(from:to)
+    to <- ceiling(nrow(data)*(i/folds))
+    range <- c(from:to)
 
-		test.data = data[range,]; 
-		train.data = data[-range,];   
+    test.data = data[range,]; 
+    train.data = data[-range,];   
 
-		if (length(unique(train.data[,"Class"])) > 1) {
-			model <- svm(Class ~ ., train.data, kernel="radial", cost = 2^svm.cost, gamma=2^svm.gamma);
-			predicted <- predict(model, test.data)
-
-			balanced.accuracy <- compute.balanced.accuracy(predicted,test.data[,"Class"])
-
-		  summed.accuracy <- summed.accuracy + balanced.accuracy
+    if (length(unique(train.data[,"Class"])) > 1) {
+      model <- svm(Class ~ ., train.data, kernel="radial", cost = 2^svm.cost, gamma=2^svm.gamma);
+      predicted <- predict(model, test.data)
+      balanced.accuracy <- compute.balanced.accuracy(predicted,test.data[,"Class"])
+      summed.accuracy <- summed.accuracy + balanced.accuracy
     } else {
-      	number.of.empty.models <- number.of.empty.models + 1
-      }
+      number.of.empty.models <- number.of.empty.models + 1
+    }
   }
   value = summed.accuracy/(folds-number.of.empty.models)
   return(value)
@@ -211,16 +202,16 @@ compute.svm.cv <- function(datafile, svm.cost, svm.gamma, folds) {
 # arg[1] = input vector of eigenvalues
 # arg[2] = number of bins
 find.histogram <- function(input.data, bins, rv.nv) {
-	prop.of.variance <- input.data/sum(input.data)	
+  prop.of.variance <- input.data/sum(input.data)	
   intervals <- seq(from = 0.0, to = 1.0, by = (1/bins))
 
-	histogram <- hist(prop.of.variance, breaks=intervals, plot=FALSE)
+  histogram <- hist(prop.of.variance, breaks=intervals, plot=FALSE)
 
-	if (rv.nv == "nv") {
-		return( histogram$counts/length(prop.of.variance) )
-	}	else {
-			return(histogram$counts)
-		}
+  if (rv.nv == "nv") {
+    return( histogram$counts/length(prop.of.variance) )
+  } else {
+    return(histogram$counts)
+  }
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -231,34 +222,34 @@ find.histogram <- function(input.data, bins, rv.nv) {
 # arg[2] = number of quantiles
 # arg[3] = real or normalized values
 find.quantiles <- function(input.data, quantiles, rv.nv) {
-	cum.prop.variance <- input.data/sum(input.data)	
-	for (i in 2:length(cum.prop.variance)) {
-		cum.prop.variance[i] <- cum.prop.variance[i] + cum.prop.variance[i-1]
-	}
+  cum.prop.variance <- input.data/sum(input.data)	
+  for (i in 2:length(cum.prop.variance)) {
+    cum.prop.variance[i] <- cum.prop.variance[i] + cum.prop.variance[i-1]
+  }
 		
   intervals <- seq(from = 0.0, to = 1.0, by = (1/quantiles))
 
   quantile.indices <- vector("numeric",quantiles)
-	q <- 1
-	while (q <= quantiles) {
-		to <- intervals[q+1]
+  q <- 1
+  while (q <= quantiles) {
+    to <- intervals[q+1]
 
     for (i in (quantile.indices[q]+1):length(cum.prop.variance)) {
-			if (cum.prop.variance[i] > to) {
-				quantile.indices[q] <- i				
-				break
+      if (cum.prop.variance[i] > to) {
+        quantile.indices[q] <- i				
+        break
       }
     }
 
-		q <- q+1
+    q <- q+1
   }
-	quantile.indices[q-1] <- length(cum.prop.variance)
+  quantile.indices[q-1] <- length(cum.prop.variance)
 	
-	if (rv.nv == "nv") {
-		return( quantile.indices/length(cum.prop.variance) )
-	}	else {
-			return(quantile.indices)
-		}
+  if (rv.nv == "nv") {
+    return( quantile.indices/length(cum.prop.variance) )
+  } else {
+    return(quantile.indices)
+  }
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -266,7 +257,7 @@ find.quantiles <- function(input.data, quantiles, rv.nv) {
 
 # computes the euclidean distance of the two vectors in the arguments
 euclidean.distance <- function(vector.i, vector.j) {
-	return( sqrt(sum((vector.i - vector.j)^2)) )
+  return( sqrt(sum((vector.i - vector.j)^2)) )
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -302,23 +293,23 @@ pearson.correlation <- function(vector.i, vector.j) {
 #--------------------------------------------------------------------------------------------------
 # computes distance of the two vectors in the arguments according to the given distace measure
 compute.distance <- function(vector.i, vector.j, distance.measure) {
-	if (distance.measure == "ed") {
-		return( euclidean.distance(vector.i,vector.j) )
+  if (distance.measure == "ed") {
+    return( euclidean.distance(vector.i,vector.j) )
+  } else {
+    if (distance.measure == "ip") {
+      return( inner.product(vector.i,vector.j) )
+    } else {
+      if (distance.measure == "cs") {
+        return( cosine.similarity(vector.i,vector.j) )
+      } else {
+	if (distance.measure == "pc") {
+	  return( pearson.correlation(vector.i,vector.j) )
 	} else {
-			if (distance.measure == "ip") {
-				return( inner.product(vector.i,vector.j) )
-			} else {
-					if (distance.measure == "cs") {
-					 	return( cosine.similarity(vector.i,vector.j) )
-					} else {
-							if (distance.measure == "pc") {
-								return( pearson.correlation(vector.i,vector.j) )
-							} else {
-									return(NULL)
-								}
-						}
-				}
-		}
+	  return(NULL)
+	}
+      }
+    }
+  }
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -334,28 +325,27 @@ compute.distance.matrix.qu.hi <- function(input.data, qu.hi, num.bins, distance.
   dimnames(result) <- list(dataset.names,dataset.names)
 
   for (i in 1:length(input.data)) {
-  	start.time <- System$currentTimeMillis()
+  start.time <- System$currentTimeMillis()
 
-   	if (qu.hi == "qu") {
-  		vect.i <- find.quantiles(input.data[[i]], num.bins, rv.nv)
-  	} else {
-				vect.i <- find.histogram(input.data[[i]], num.bins, rv.nv)
-  		}
+  if (qu.hi == "qu") {
+    vect.i <- find.quantiles(input.data[[i]], num.bins, rv.nv)
+  } else {
+    vect.i <- find.histogram(input.data[[i]], num.bins, rv.nv)
+  }
   	  	
     for (j in 1:length(input.data)) {
       if (j != i) {
-      	if (qu.hi == "qu") {
-		  		vect.j <- find.quantiles(input.data[[j]], num.bins, rv.nv)
-		  	} else {
-						vect.j <- find.histogram(input.data[[j]], num.bins, rv.nv)		  	
-		  		}
+        if (qu.hi == "qu") {
+          vect.j <- find.quantiles(input.data[[j]], num.bins, rv.nv)
+        } else {
+          vect.j <- find.histogram(input.data[[j]], num.bins, rv.nv)		  	
+        }
 		  	
-		  	result[i,j] <- compute.distance(vect.i, vect.j, distance.measure)
-			} else {
-					result[i,j] <- 0
-				}
+        result[i,j] <- compute.distance(vect.i, vect.j, distance.measure)
+      } else {
+        result[i,j] <- 0
+      }
     }
-    
     result.matrix[i,"time.dist"] <<- System$currentTimeMillis() - start.time
   }
 
@@ -368,7 +358,7 @@ compute.distance.matrix.qu.hi <- function(input.data, qu.hi, num.bins, distance.
 # converts an integer to a boolean vector corresponding to its binary representation
 convert.mf.group.combination.to.vector <- function (number, num.bits = 8) {
 #  return( rev(as.logical(intToBits(number))[1:num.bits]) )
-	return( as.logical(intToBits(number))[1:num.bits] )
+  return( as.logical(intToBits(number))[1:num.bits] )
 }
 
 #--------------------------------------------------------------------------------------------------
@@ -381,14 +371,14 @@ compute.distance.matrix.mf.vectors <- function(input.data, distance.measure) {
   dimnames(result) <- list(dataset.names,dataset.names)
 
   for (i in 1:nrow(input.data)) {
-  	start.time <- System$currentTimeMillis()
+    start.time <- System$currentTimeMillis()
   	  	
     for (j in 1:nrow(input.data)) {
       if (j != i) {
-		  	result[i,j] <- compute.distance(input.data[i,], input.data[j,], distance.measure)
-			} else {
-					result[i,j] <- 0
-				}
+        result[i,j] <- compute.distance(input.data[i,], input.data[j,], distance.measure)
+      } else {
+        result[i,j] <- 0
+      }
     }
     
     result.matrix[i,"time.dist"] <<- System$currentTimeMillis() - start.time
