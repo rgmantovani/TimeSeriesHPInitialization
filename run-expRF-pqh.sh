@@ -17,7 +17,6 @@ do
 							for h in "svm" "J48"
 							do
 								qsub run-job-expRF-pqh.sh $a $b $c $d $e $f $g $h
-								# echo "run-job-expRF-pqh.sh" $a $b $c $d $e $f $g $h
 							done
 						done
 					done

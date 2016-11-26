@@ -12,7 +12,7 @@ do
 				do
 					for f in 1 2 3
 					do
-						for g in "pso" "rs" "dfs"
+						for g in "pso" "rs" "df" "smbo"
 						do
 							for h in 5
 							do

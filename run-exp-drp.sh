@@ -7,7 +7,6 @@ do
 		for c in "svm" "J48"
 		do
 			qsub run-job-drp.sh $a $b $c
-			# echo "run-job-drp" $a $b $c
 		done
 	done
 done

@@ -11,7 +11,6 @@ do
 				for e in "svm" "J48"
 				do
 					qsub run-job-expRF-mfg.sh $a $b $c $d $e
-					# echo "rrun-job-expRF-mfg.sh" $a $b $c $d $e
 				done
 			done
 		done

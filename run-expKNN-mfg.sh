@@ -8,7 +8,7 @@ do
 		do
 			for d in 1 2 3
 			do
-				for e in "pso" "rs" "dfs"
+				for e in "pso" "rs" "df" "smbo"
 				do
 					for f in 5
 					do
