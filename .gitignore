@@ -3,6 +3,9 @@
 .RData
 
 input/120-results
+input/bindSolutionsSVMs.R
+input/sendToRafael/
+
 *.zip
 examples/
 output/
