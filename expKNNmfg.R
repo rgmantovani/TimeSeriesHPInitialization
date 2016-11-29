@@ -4,7 +4,7 @@
 # args[2] = {"rv", "nv"}	// real or normalized meta-feature vectors
 # args[3] = {"ed", "ip", "cs", "pc"} // euclidean dist., inner prod., cosine sim., pearson corr.
 # args[4] = {1,2,3} // k for nearest neighbors
-# args[5] = {"pso", "rs", "dfs"}	// PSO, RS, DF (w.r.t. SVM)
+# args[5] = {"pso", "rs", "df", "smbo"}	// PSO, RS, DF (w.r.t. SVM)
 # args[6] = {3,5,10} // folds for cross-validation (will try only 5)
 # args[7] = {"svm", "J48"} // algorithm which hyper-parameters are predicted
 #
@@ -15,8 +15,6 @@
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
-# args = c("1", "rv", "ed", "3", "pso", "3", "svm")
-# args = c("1", "rv", "ed", "3", "pso", "3", "J48")
 
 DIST      = args[3]
 K         = as.numeric(args[4])

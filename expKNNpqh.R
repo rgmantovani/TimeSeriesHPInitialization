@@ -5,7 +5,7 @@
 # args[4]  = {5,10,20} // bins for quantiles or histograms
 # args[5]  = {"ed", "ip", "cs", "pc"} // euclidean dist., inner prod., cosine sim., pearson corr. 
 # args[6]  = {1,2,3} // k for nearest neighbors
-# args[7]  = {"pso", "rs", "dfs", "smbo"}	// PSO, RS, DF (w.r.t. SVM)
+# args[7]  = {"pso", "rs", "df", "smbo"}	// PSO, RS, DF (w.r.t. SVM)
 # args[8]  = {3,5,10} // folds for cross-validation (will try only 5)
 # args[9]  = {"rv", "nv"}	// real or normalized quantile vectors (! only for quantiles, ... added only later)
 # args[10] = {"svm", "J48"} // algo to be analyzed
@@ -17,8 +17,6 @@
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
-# args = c("in", "100", "qu", "5", "ed", "3", "pso", "3", "rv", "J48")
-# args = c("in", "100", "qu", "5", "ed", "3", "pso", "3", "rv", "svm")
 
 BINS 			= as.numeric(args[4])
 DIST      = args[5]

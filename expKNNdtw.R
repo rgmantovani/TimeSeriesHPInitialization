@@ -3,7 +3,7 @@
 # args[2] = {-10, ..., 10}	// gamma for the RBF kernel for KPCA (if <-10 or >10 then PCA computed)
 # args[3] = {"rv", "nv"}	// resulting DTW, normalized DTW
 # args[4] = {1,2,3} // k for nearest neighbors
-# args[5] = {"pso", "rs", "df"}	// PSO, RS, DF (w.r.t. SVM)
+# args[5] = {"pso", "rs", "df", "smbo"}	// PSO, RS, DF (w.r.t. SVM)
 # args[6] = {3,5,10} // folds for cross-validation (will try only 5)
 # args[7] = {"svm", "J48"} // algo to be analyzed
 # 
@@ -14,8 +14,6 @@
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
-# args = c("in", "100", "rv", "3", "df", "3", "svm")
-# args = c("in", "100", "nv", "3", "rs", "3", "J48")
 
 K         = as.numeric(args[4])
 HP.TUNING = args[5]
