@@ -5,6 +5,7 @@
 input/120-results
 input/bindSolutionsSVMs.R
 input/sendToRafael/
+input/bindSolutionsJ48.R
 
 *.zip
 examples/

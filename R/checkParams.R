@@ -48,7 +48,7 @@ checkDTParams = function(settings) {
  
     } else {
       # if R = TRUE, N (number of folds reduced) [2, 10], C not used, N default = 3
-       settings[i, C.id] = NA 
+        settings[i, C.id] = NA 
       if(is.na(settings[i, N.id]) | settings[i, N.id] == "New.level") {
         settings[i, N.id] = 3
       } 

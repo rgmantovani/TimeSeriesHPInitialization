@@ -37,6 +37,7 @@ getHPSolutions = function(datasets, hp.technique, algo) {
     } else {
       inner.aux[, 2] = as.integer(inner.aux[,2])
       inner.aux[, 3] = as.integer(inner.aux[,3])
+      
       return(inner.aux[, 1:9])
     }
   })

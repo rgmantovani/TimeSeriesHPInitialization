@@ -42,7 +42,7 @@ for (i in 1:length(datafile.names)) {
     hp.technique = HP.TUNING, algo = ALGO)[[1]]
 
   colnames(settings) = paste(colnames(settings), "response", sep=".")  
-  aggregated.hp = checkParams(settings = settings, algo = args[3])
+  aggregated.hp = checkParams(settings = settings, algo = ALGO)
 
   # compute results of SVM using cross-validation
   cat("/")
