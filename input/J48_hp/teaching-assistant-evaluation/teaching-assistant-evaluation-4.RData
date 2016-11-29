@@ -1,4 +1,4 @@
-x <-
+newSolution <-
 structure(list(PSO.pruning.confidence = 0.0792, PSO.min.n.instances = 1, 
     PSO.n.folds.error = NA_real_, PSO.not.collapse.tree = TRUE, 
     PSO.using.reduced.error.pruning = FALSE, PSO.using.only.binary.split = TRUE, 
@@ -22,7 +22,11 @@ structure(list(PSO.pruning.confidence = 0.0792, PSO.min.n.instances = 1,
     DF.valid.acc = 0.4452, DF.test.acc = 0.47247, DF.train.time = 0.041, 
     DF.num.leaves = 10.3, DF.tree.size = 19.6, DF.index = 1, 
     DF.n.solutions = 1, DF.generations = 1, DF.n.evaluations = 1, 
-    DF.cpu.time = 3.778), .Names = c("PSO.pruning.confidence", 
+    DF.cpu.time = 3.778, SMBO.not.collapse.tree = FALSE, SMBO.using.reduced.error.pruning = FALSE, 
+    SMBO.pruning.confidence = 0.359452579438941, SMBO.min.n.instances = 13L, 
+    SMBO.using.only.binary.split = FALSE, SMBO.not.doing.subtree.raising = TRUE, 
+    SMBO.using.laplace.smoth = TRUE, SMBO.not.using.MDL.correction = FALSE, 
+    SMBO.n.folds.error = NA_integer_, SMBO.balanced.accuracy.test.mean = 0.515751532418199), .Names = c("PSO.pruning.confidence", 
 "PSO.min.n.instances", "PSO.n.folds.error", "PSO.not.collapse.tree", 
 "PSO.using.reduced.error.pruning", "PSO.using.only.binary.split", 
 "PSO.not.doing.subtree.raising", "PSO.using.laplace.smoth", "PSO.not.using.MDL.correction", 
@@ -40,4 +44,8 @@ structure(list(PSO.pruning.confidence = 0.0792, PSO.min.n.instances = 1,
 "DF.using.laplace.smoth", "DF.not.using.MDL.correction", "DF.valid.acc", 
 "DF.test.acc", "DF.train.time", "DF.num.leaves", "DF.tree.size", 
 "DF.index", "DF.n.solutions", "DF.generations", "DF.n.evaluations", 
-"DF.cpu.time"), row.names = 4L, class = "data.frame")
+"DF.cpu.time", "SMBO.not.collapse.tree", "SMBO.using.reduced.error.pruning", 
+"SMBO.pruning.confidence", "SMBO.min.n.instances", "SMBO.using.only.binary.split", 
+"SMBO.not.doing.subtree.raising", "SMBO.using.laplace.smoth", 
+"SMBO.not.using.MDL.correction", "SMBO.n.folds.error", "SMBO.balanced.accuracy.test.mean"
+), row.names = 4L, class = "data.frame")

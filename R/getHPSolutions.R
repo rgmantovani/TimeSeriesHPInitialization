@@ -29,7 +29,7 @@ getHPSolutions = function(datasets, hp.technique, algo) {
       return(ret[nrow(ret), sel.ids])
     })
    
-    inner.aux = do.call("rbind", inner.aux)
+    inner.aux = plyr::rbind.fill(inner.aux)
 
     # Returning just the hyper-parameter
     if(algo == "svm") {

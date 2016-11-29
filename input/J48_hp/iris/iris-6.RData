@@ -1,4 +1,4 @@
-x <-
+newSolution <-
 structure(list(PSO.pruning.confidence = 0.19094, PSO.min.n.instances = 3, 
     PSO.n.folds.error = NA_real_, PSO.not.collapse.tree = TRUE, 
     PSO.using.reduced.error.pruning = FALSE, PSO.using.only.binary.split = TRUE, 
@@ -20,7 +20,12 @@ structure(list(PSO.pruning.confidence = 0.19094, PSO.min.n.instances = 3,
     DF.using.laplace.smoth = FALSE, DF.not.using.MDL.correction = FALSE, 
     DF.valid.acc = 0.93857, DF.test.acc = 0.94524, DF.train.time = 0.1351, 
     DF.num.leaves = 4.3, DF.tree.size = 7.6, DF.index = 1, DF.n.solutions = 1, 
-    DF.generations = 1, DF.n.evaluations = 1, DF.cpu.time = 13.808), .Names = c("PSO.pruning.confidence", 
+    DF.generations = 1, DF.n.evaluations = 1, DF.cpu.time = 13.808, 
+    SMBO.not.collapse.tree = FALSE, SMBO.using.reduced.error.pruning = FALSE, 
+    SMBO.min.n.instances = 3L, SMBO.n.folds.error = NA_integer_, 
+    SMBO.using.only.binary.split = FALSE, SMBO.not.doing.subtree.raising = TRUE, 
+    SMBO.using.laplace.smoth = FALSE, SMBO.not.using.MDL.correction = TRUE, 
+    SMBO.pruning.confidence = 0.480143658920536, SMBO.balanced.accuracy.test.mean = 0.975771604938272), .Names = c("PSO.pruning.confidence", 
 "PSO.min.n.instances", "PSO.n.folds.error", "PSO.not.collapse.tree", 
 "PSO.using.reduced.error.pruning", "PSO.using.only.binary.split", 
 "PSO.not.doing.subtree.raising", "PSO.using.laplace.smoth", "PSO.not.using.MDL.correction", 
@@ -38,4 +43,8 @@ structure(list(PSO.pruning.confidence = 0.19094, PSO.min.n.instances = 3,
 "DF.using.laplace.smoth", "DF.not.using.MDL.correction", "DF.valid.acc", 
 "DF.test.acc", "DF.train.time", "DF.num.leaves", "DF.tree.size", 
 "DF.index", "DF.n.solutions", "DF.generations", "DF.n.evaluations", 
-"DF.cpu.time"), row.names = 6L, class = "data.frame")
+"DF.cpu.time", "SMBO.not.collapse.tree", "SMBO.using.reduced.error.pruning", 
+"SMBO.min.n.instances", "SMBO.n.folds.error", "SMBO.using.only.binary.split", 
+"SMBO.not.doing.subtree.raising", "SMBO.using.laplace.smoth", 
+"SMBO.not.using.MDL.correction", "SMBO.pruning.confidence", "SMBO.balanced.accuracy.test.mean"
+), row.names = 6L, class = "data.frame")

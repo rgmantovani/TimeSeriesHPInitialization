@@ -1,4 +1,4 @@
-x <-
+newSolution <-
 structure(list(PSO.pruning.confidence = 0.30562, PSO.min.n.instances = 3, 
     PSO.n.folds.error = NA_real_, PSO.not.collapse.tree = FALSE, 
     PSO.using.reduced.error.pruning = FALSE, PSO.using.only.binary.split = TRUE, 
@@ -22,7 +22,11 @@ structure(list(PSO.pruning.confidence = 0.30562, PSO.min.n.instances = 3,
     DF.valid.acc = 0.94534, DF.test.acc = 0.93993, DF.train.time = 0.1266, 
     DF.num.leaves = 25.5, DF.tree.size = 33.8, DF.index = 1, 
     DF.n.solutions = 1, DF.generations = 1, DF.n.evaluations = 1, 
-    DF.cpu.time = 8.07), .Names = c("PSO.pruning.confidence", 
+    DF.cpu.time = 8.07, SMBO.not.collapse.tree = FALSE, SMBO.using.reduced.error.pruning = TRUE, 
+    SMBO.pruning.confidence = NA_real_, SMBO.min.n.instances = 1L, 
+    SMBO.using.only.binary.split = TRUE, SMBO.not.doing.subtree.raising = FALSE, 
+    SMBO.using.laplace.smoth = FALSE, SMBO.not.using.MDL.correction = FALSE, 
+    SMBO.n.folds.error = 3L, SMBO.balanced.accuracy.test.mean = 0.957400616907841), .Names = c("PSO.pruning.confidence", 
 "PSO.min.n.instances", "PSO.n.folds.error", "PSO.not.collapse.tree", 
 "PSO.using.reduced.error.pruning", "PSO.using.only.binary.split", 
 "PSO.not.doing.subtree.raising", "PSO.using.laplace.smoth", "PSO.not.using.MDL.correction", 
@@ -40,4 +44,8 @@ structure(list(PSO.pruning.confidence = 0.30562, PSO.min.n.instances = 3,
 "DF.using.laplace.smoth", "DF.not.using.MDL.correction", "DF.valid.acc", 
 "DF.test.acc", "DF.train.time", "DF.num.leaves", "DF.tree.size", 
 "DF.index", "DF.n.solutions", "DF.generations", "DF.n.evaluations", 
-"DF.cpu.time"), row.names = 30L, class = "data.frame")
+"DF.cpu.time", "SMBO.not.collapse.tree", "SMBO.using.reduced.error.pruning", 
+"SMBO.pruning.confidence", "SMBO.min.n.instances", "SMBO.using.only.binary.split", 
+"SMBO.not.doing.subtree.raising", "SMBO.using.laplace.smoth", 
+"SMBO.not.using.MDL.correction", "SMBO.n.folds.error", "SMBO.balanced.accuracy.test.mean"
+), row.names = 30L, class = "data.frame")

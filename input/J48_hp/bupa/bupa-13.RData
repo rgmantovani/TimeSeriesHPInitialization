@@ -1,4 +1,4 @@
-x <-
+newSolution <-
 structure(list(PSO.pruning.confidence = NA_real_, PSO.min.n.instances = 3, 
     PSO.n.folds.error = 4, PSO.not.collapse.tree = FALSE, PSO.using.reduced.error.pruning = TRUE, 
     PSO.using.only.binary.split = FALSE, PSO.not.doing.subtree.raising = TRUE, 
@@ -20,7 +20,12 @@ structure(list(PSO.pruning.confidence = NA_real_, PSO.min.n.instances = 3,
     DF.not.using.MDL.correction = FALSE, DF.valid.acc = 0.61565, 
     DF.test.acc = 0.65424, DF.train.time = 0.0556, DF.num.leaves = 22.6, 
     DF.tree.size = 44.2, DF.index = 1, DF.n.solutions = 1, DF.generations = 1, 
-    DF.n.evaluations = 1, DF.cpu.time = 5.46), .Names = c("PSO.pruning.confidence", 
+    DF.n.evaluations = 1, DF.cpu.time = 5.46, SMBO.not.collapse.tree = FALSE, 
+    SMBO.using.reduced.error.pruning = FALSE, SMBO.pruning.confidence = 0.494842603793385, 
+    SMBO.min.n.instances = 16L, SMBO.using.only.binary.split = FALSE, 
+    SMBO.not.doing.subtree.raising = FALSE, SMBO.using.laplace.smoth = FALSE, 
+    SMBO.not.using.MDL.correction = FALSE, SMBO.n.folds.error = NA_integer_, 
+    SMBO.balanced.accuracy.test.mean = 0.682319173863287), .Names = c("PSO.pruning.confidence", 
 "PSO.min.n.instances", "PSO.n.folds.error", "PSO.not.collapse.tree", 
 "PSO.using.reduced.error.pruning", "PSO.using.only.binary.split", 
 "PSO.not.doing.subtree.raising", "PSO.using.laplace.smoth", "PSO.not.using.MDL.correction", 
@@ -38,4 +43,8 @@ structure(list(PSO.pruning.confidence = NA_real_, PSO.min.n.instances = 3,
 "DF.using.laplace.smoth", "DF.not.using.MDL.correction", "DF.valid.acc", 
 "DF.test.acc", "DF.train.time", "DF.num.leaves", "DF.tree.size", 
 "DF.index", "DF.n.solutions", "DF.generations", "DF.n.evaluations", 
-"DF.cpu.time"), row.names = 13L, class = "data.frame")
+"DF.cpu.time", "SMBO.not.collapse.tree", "SMBO.using.reduced.error.pruning", 
+"SMBO.pruning.confidence", "SMBO.min.n.instances", "SMBO.using.only.binary.split", 
+"SMBO.not.doing.subtree.raising", "SMBO.using.laplace.smoth", 
+"SMBO.not.using.MDL.correction", "SMBO.n.folds.error", "SMBO.balanced.accuracy.test.mean"
+), row.names = 13L, class = "data.frame")

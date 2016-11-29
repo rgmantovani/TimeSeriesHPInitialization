@@ -1,4 +1,4 @@
-x <-
+newSolution <-
 structure(list(PSO.pruning.confidence = 0.15293, PSO.min.n.instances = 11, 
     PSO.n.folds.error = NA_real_, PSO.not.collapse.tree = FALSE, 
     PSO.using.reduced.error.pruning = FALSE, PSO.using.only.binary.split = FALSE, 
@@ -21,7 +21,12 @@ structure(list(PSO.pruning.confidence = 0.15293, PSO.min.n.instances = 11,
     DF.using.laplace.smoth = FALSE, DF.not.using.MDL.correction = FALSE, 
     DF.valid.acc = 0.79944, DF.test.acc = 0.81235, DF.train.time = 0.0592, 
     DF.num.leaves = 8.5, DF.tree.size = 16, DF.index = 1, DF.n.solutions = 1, 
-    DF.generations = 1, DF.n.evaluations = 1, DF.cpu.time = 4.229), .Names = c("PSO.pruning.confidence", 
+    DF.generations = 1, DF.n.evaluations = 1, DF.cpu.time = 4.229, 
+    SMBO.not.collapse.tree = FALSE, SMBO.using.reduced.error.pruning = FALSE, 
+    SMBO.pruning.confidence = 0.431255754029219, SMBO.min.n.instances = 5L, 
+    SMBO.using.only.binary.split = FALSE, SMBO.not.doing.subtree.raising = TRUE, 
+    SMBO.using.laplace.smoth = TRUE, SMBO.not.using.MDL.correction = TRUE, 
+    SMBO.balanced.accuracy.test.mean = 0.800221172589594), .Names = c("PSO.pruning.confidence", 
 "PSO.min.n.instances", "PSO.n.folds.error", "PSO.not.collapse.tree", 
 "PSO.using.reduced.error.pruning", "PSO.using.only.binary.split", 
 "PSO.not.doing.subtree.raising", "PSO.using.laplace.smoth", "PSO.not.using.MDL.correction", 
@@ -39,4 +44,8 @@ structure(list(PSO.pruning.confidence = 0.15293, PSO.min.n.instances = 11,
 "DF.using.laplace.smoth", "DF.not.using.MDL.correction", "DF.valid.acc", 
 "DF.test.acc", "DF.train.time", "DF.num.leaves", "DF.tree.size", 
 "DF.index", "DF.n.solutions", "DF.generations", "DF.n.evaluations", 
-"DF.cpu.time"), row.names = 25L, class = "data.frame")
+"DF.cpu.time", "SMBO.not.collapse.tree", "SMBO.using.reduced.error.pruning", 
+"SMBO.pruning.confidence", "SMBO.min.n.instances", "SMBO.using.only.binary.split", 
+"SMBO.not.doing.subtree.raising", "SMBO.using.laplace.smoth", 
+"SMBO.not.using.MDL.correction", "SMBO.balanced.accuracy.test.mean"
+), row.names = 25L, class = "data.frame")

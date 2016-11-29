@@ -1,4 +1,4 @@
-x <-
+newSolution <-
 structure(list(PSO.pruning.confidence = 0.1149, PSO.min.n.instances = 1, 
     PSO.n.folds.error = NA_real_, PSO.not.collapse.tree = FALSE, 
     PSO.using.reduced.error.pruning = FALSE, PSO.using.only.binary.split = FALSE, 
@@ -21,7 +21,12 @@ structure(list(PSO.pruning.confidence = 0.1149, PSO.min.n.instances = 1,
     DF.using.laplace.smoth = FALSE, DF.not.using.MDL.correction = FALSE, 
     DF.valid.acc = 0.65124, DF.test.acc = 0.61486, DF.train.time = 0.1245, 
     DF.num.leaves = 43, DF.tree.size = 85, DF.index = 1, DF.n.solutions = 1, 
-    DF.generations = 1, DF.n.evaluations = 1, DF.cpu.time = 6.113), .Names = c("PSO.pruning.confidence", 
+    DF.generations = 1, DF.n.evaluations = 1, DF.cpu.time = 6.113, 
+    SMBO.not.collapse.tree = TRUE, SMBO.using.reduced.error.pruning = FALSE, 
+    SMBO.pruning.confidence = 0.228538402816685, SMBO.min.n.instances = 1L, 
+    SMBO.using.only.binary.split = TRUE, SMBO.not.doing.subtree.raising = TRUE, 
+    SMBO.using.laplace.smoth = TRUE, SMBO.not.using.MDL.correction = TRUE, 
+    SMBO.balanced.accuracy.test.mean = 0.613932980599647), .Names = c("PSO.pruning.confidence", 
 "PSO.min.n.instances", "PSO.n.folds.error", "PSO.not.collapse.tree", 
 "PSO.using.reduced.error.pruning", "PSO.using.only.binary.split", 
 "PSO.not.doing.subtree.raising", "PSO.using.laplace.smoth", "PSO.not.using.MDL.correction", 
@@ -39,4 +44,8 @@ structure(list(PSO.pruning.confidence = 0.1149, PSO.min.n.instances = 1,
 "DF.using.laplace.smoth", "DF.not.using.MDL.correction", "DF.valid.acc", 
 "DF.test.acc", "DF.train.time", "DF.num.leaves", "DF.tree.size", 
 "DF.index", "DF.n.solutions", "DF.generations", "DF.n.evaluations", 
-"DF.cpu.time"), row.names = 27L, class = "data.frame")
+"DF.cpu.time", "SMBO.not.collapse.tree", "SMBO.using.reduced.error.pruning", 
+"SMBO.pruning.confidence", "SMBO.min.n.instances", "SMBO.using.only.binary.split", 
+"SMBO.not.doing.subtree.raising", "SMBO.using.laplace.smoth", 
+"SMBO.not.using.MDL.correction", "SMBO.balanced.accuracy.test.mean"
+), row.names = 27L, class = "data.frame")
