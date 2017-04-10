@@ -37,19 +37,18 @@ for(file in my.files) {
 
 meta.feature.groups = convert.mf.group.combination.to.vector(as.numeric(args[1]))
 ret = getComputationTimes(meta.feature.groups = meta.feature.groups, obj = obj)
-sel.ids = which(rownames(ret$feature.matrix) %in% COMMON.DATA)
 
 # normalize the feature matrix if required
 if (args[2] == "nv") {
   cat(" - Scaling features.\n")
-  feature.matrix = scale(ret$feature.matrix[sel.ids, ])
+  feature.matrix = scale(ret$feature.matrix)
 } else {
   cat(" - Using normal features.\n")
-  feature.matrix = ret$feature.matrix[sel.ids, ]
+  feature.matrix = ret$feature.matrix
 }
 
 result.matrix = fillParamsMfgKNN(result.matrix = result.matrix, args = args)
-result.matrix[, "time.FE"] = ret$computation.times[sel.ids]
+result.matrix[, "time.FE"] = ret$computation.times
 
 # compute the distance matrix between datasets from meta-feature vectors
 distance.matrix = compute.distance.matrix.mf.vectors(input.data = feature.matrix, 
@@ -74,7 +73,7 @@ for (i in 1:length(datafile.names)) {
 
 	# compute results of SVM using cross-validation
   cat("/")
-  tmp = lapply(1:30, function(rep.id) {
+  tmp = lapply(1:REPETITIONS, function(rep.id) {
     set.seed(rep.id)
     cat("=")
     hp.setting = aggr.params[rep.id, ]

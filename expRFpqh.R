@@ -54,7 +54,8 @@ for (i in 1:length(datafile.names)) {
 		pca = prcomp(pp.data, center = TRUE, scale. = TRUE)
 		eigenvalues[[i]] = pca$sdev^2
 	} else {
-		pca = kpca(~., data=pp.data, kernel = "rbfdot", kpar = list(sigma=2^gamma), features=0, th=0)
+		pca = kpca(~., data=pp.data, kernel = "rbfdot", kpar = list(sigma=2^gamma), 
+      features=0, th=0)
 		eigenvalues[[i]] = pca@eig
 	}
 	result.matrix[i,"time.FE"] = System$currentTimeMillis() - start.time
@@ -75,7 +76,7 @@ pca.meta.features = data.frame(do.call("rbind", aux), row.names = dataset.names)
 hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = HP.TUNING, algo = ALGO)
 
 # doing predictions
-outer.aux = lapply(1:30, function(rep.id) {
+outer.aux = lapply(1:REPETITIONS, function(rep.id) {
   	
 	set.seed(seed = rep.id)
   cat(" @ Repetition: ", rep.id, " ... \n")

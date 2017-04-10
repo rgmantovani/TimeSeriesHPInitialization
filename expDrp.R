@@ -46,7 +46,7 @@ for (i in 1:length(datafile.names)) {
 
   # compute results of SVM using cross-validation
   cat("/")
-  aux = lapply(1:30, function(j) {
+  aux = lapply(1:REPETITIONS, function(j) {
 
     cat("=")
     set.seed(j)

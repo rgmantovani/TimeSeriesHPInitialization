@@ -3,7 +3,7 @@
 
 getComputationTimes = function(meta.feature.groups, obj) {
 	
-  computation.times = matrix(0, nrow = length(rownames(obj$simple)[,1]), ncol = 1)
+  computation.times = matrix(0, nrow = length(rownames(obj$simple)), ncol = 1)
   dimnames(computation.times) = list(rownames(obj$simple), NULL)
   feature.matrix = NULL
 

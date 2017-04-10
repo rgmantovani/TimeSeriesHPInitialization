@@ -14,6 +14,7 @@
 #--------------------------------------------------------------------------------------------------
 
 args = commandArgs(TRUE)
+print(args)
 
 GROUPS    = as.numeric(args[1])
 RV.NV     = args[2]
@@ -36,24 +37,23 @@ for(file in my.files) {
 
 meta.feature.groups = convert.mf.group.combination.to.vector(number = GROUPS)
 ret = getComputationTimes(meta.feature.groups = meta.feature.groups, obj = obj)
-sel.ids = which(rownames(ret$feature.matrix) %in% COMMON.DATA)
 
 # normalize the feature matrix if required
 if (RV.NV == "nv") {
   cat(" - Scaling features.\n")
-  feature.matrix = scale(ret$feature.matrix[sel.ids, ])
+  feature.matrix = scale(ret$feature.matrix)
 } else {
   cat(" - Using normal features.\n")
-  feature.matrix = ret$feature.matrix[sel.ids, ]
+  feature.matrix = ret$feature.matrix
 }
-result.matrix[, "time.FE"] = ret$computation.times[sel.ids]
+result.matrix[, "time.FE"] = ret$computation.times
 
 cat(" @ Retrieving HP solutions \n")
 result.matrix = fillParamsMfgRF(result.matrix = result.matrix, args = args)
 hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = HP.TUNING, algo = ALGO)
 
-outer.aux = lapply(1:30, function(rep.id) {
-
+outer.aux = lapply(1:REPETITIONS, function(rep.id) {
+  
   set.seed(seed = rep.id)
   cat(" @ Repetition: ", rep.id, " ... \n")
  

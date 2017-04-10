@@ -85,7 +85,7 @@ for (i in 1:length(datafile.names)) {
 
 	# compute results of SVM using cross-validation
   cat("/")
-  tmp = lapply(1:30, function(rep.id) {
+  tmp = lapply(1:REPETITIONS, function(rep.id) {
     set.seed(rep.id)
     cat("=")
     hp.setting = aggr.params[rep.id, ]
