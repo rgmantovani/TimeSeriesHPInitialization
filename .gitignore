@@ -2,12 +2,24 @@
 .Rhistory
 .RData
 
-input/120-results
-input/bindSolutionsSVMs.R
+input/*.R
 input/sendToRafael/
-input/bindSolutionsJ48.R
+input/120-results-DTs/
+
+input/svm_smbo_900/analcatdata_authorship
+input/svm_smbo_900/analcatdata_dmft
+input/svm_smbo_900/car-evaluation
+input/svm_smbo_900/connectionist-vowel
+input/svm_smbo_900/flare
+
+
+extractSMBOSolutions.R
+
+TODO
 
 *.zip
 examples/
 output/
 errors/
+graphs/
+plots/

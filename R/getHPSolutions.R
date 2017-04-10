@@ -12,6 +12,19 @@ getHPSolutions = function(datasets, hp.technique, algo) {
   assertChoice(x = hp.technique , choices = c("rs", "df", "pso", "smbo"))
   assertChoice(x = algo, choices = c("svm", "J48"), .var.name = "algo")
   
+  if(algo == "svm" & hp.technique == "smbo") {
+    aux = getSvmSMBOSolutions(datasets = datasets, hp.technique = hp.technique, algo = algo)
+  } else {
+    aux = getOldHPSolutions(datasets = datasets, hp.technique = hp.technique, algo = algo)
+  }
+  return(aux)
+}
+
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+
+getOldHPSolutions = function(datasets, hp.technique, algo) {
+
   aux = lapply(datasets, function(datafile) {
    
     directory = paste0(hp.dir, datafile)
@@ -42,8 +55,24 @@ getHPSolutions = function(datasets, hp.technique, algo) {
     }
   })
 
+  return (aux)
+} 
+
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+
+# Read more recent solutions
+getSvmSMBOSolutions = function(datasets, hp.technique, algo) {
+
+  aux = lapply(datasets, function(datafile) {
+    hp.file = paste0(hp.dir.smbo, datafile, "/smbo_900_solutions.RData")
+    suppressMessages(load(hp.file))# verbose = TRUE)
+    return(ret[, 1:2])
+  })
+
   return(aux)
 }
 
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
+
