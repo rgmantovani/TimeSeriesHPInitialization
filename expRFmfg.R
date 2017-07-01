@@ -1,4 +1,5 @@
 #--------------------------------------------------------------------------------------------------
+# Command line parameters:
 #--------------------------------------------------------------------------------------------------
 
 # Parameters:
@@ -13,8 +14,8 @@
 # Fucntion definitions
 #--------------------------------------------------------------------------------------------------
 
-args = commandArgs(TRUE)
-print(args)
+args = c(1, "rv", "smbo", 3, "J48")
+# args = commandArgs(TRUE)
 
 GROUPS    = as.numeric(args[1])
 RV.NV     = args[2]
@@ -22,14 +23,26 @@ HP.TUNING = args[3]
 FOLDS     = as.numeric(args[4])
 ALGO      = args[5]
 
-cat(" @Algorithm: ", ALGO, "\n")
-cat("Loading files ... \n")
-
-my.files = list.files(path = "R", full.names = TRUE)
-for(file in my.files) {
-  source(file)
-  cat(" - file: ", file, "\n")
+cat(" ========================================== \n")
+cat(" * Running expRFmfg with following parameters: \n")
+for(i in 1:length(args)) {
+  cat("    - arg[",i,"]:", args[i], "\n")
 }
+cat(" ========================================== \n")
+
+#--------------------------------------------------------------------------------------------------
+# Required data
+#--------------------------------------------------------------------------------------------------
+
+devtools::load_all()
+
+dirs = getDataDirs(algo = ALGO, tuning = HP.TUNING)
+ret  = getResultMatrix(dirs = dirs, algo = ALGO, tuning = HP.TUNING)
+
+obj = ret$obj
+result.matrix  = ret$mat
+dataset.names  = ret$dataset.names
+datafile.names = ret$datafile.names 
 
 #--------------------------------------------------------------------------------------------------
 # Main program
@@ -50,7 +63,8 @@ result.matrix[, "time.FE"] = ret$computation.times
 
 cat(" @ Retrieving HP solutions \n")
 result.matrix = fillParamsMfgRF(result.matrix = result.matrix, args = args)
-hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = HP.TUNING, algo = ALGO)
+hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = HP.TUNING, 
+  algo = ALGO, dirs = dirs)
 
 outer.aux = lapply(1:REPETITIONS, function(rep.id) {
   
@@ -78,8 +92,8 @@ outer.aux = lapply(1:REPETITIONS, function(rep.id) {
       trafo = NULL
     }
 
-    perf = runBaseLearner(datafile = datafile, algo = ALGO, params = params, 
-      folds = FOLDS, trafo = trafo)
+    perf = runBaseLearner(datafile = datafile, algo = ALGO, 
+      params = params, dirs = dirs, folds = FOLDS, trafo = trafo)
  
     pred.time = System$currentTimeMillis() - inner.time
     return(c(perf, pred.time))
@@ -101,7 +115,7 @@ result.matrix[, "mean.acc"] = rowMeans(accs)
 
 cat(" - Saving results \n")
 file.name = paste(paste("expRFMfg",paste("-", args, sep="", collapse=""),sep=""), "rda", sep=".")
-dput(result.matrix, file = paste(results.dir,file.name,sep="/"))
+dput(result.matrix, file = paste(dirs$results.dir,file.name,sep="/"))
 
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------

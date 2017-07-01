@@ -2,8 +2,6 @@
 .Rhistory
 .RData
 
-extractSMBOSolutions.R
-
 *.zip
 
 examples/

@@ -23,13 +23,12 @@ checkParams = function(settings, algo) {
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
 
-# TODO: define par.set (using ParamHelpers)?
 checkDTParams = function(settings) {
  
-  R.id = which(grepl(pattern = ".using.reduced.error.pruning.response", x = colnames(settings)))
-  C.id = which(grepl(pattern = ".pruning.confidence.response", x = colnames(settings)))
-  N.id = which(grepl(pattern = ".n.folds.error.response", x = colnames(settings)))
-  M.id = which(grepl(pattern = ".min.n.instances.response", x = colnames(settings)))
+  R.id = which(grepl(pattern = "R.response", x = colnames(settings)))
+  C.id = which(grepl(pattern = "C.response", x = colnames(settings)))
+  N.id = which(grepl(pattern = "N.response", x = colnames(settings)))
+  M.id = which(grepl(pattern = "M.response", x = colnames(settings)))
 
   # R (use reduce error pruning)
   for(i in 1:nrow(settings)) {
@@ -55,7 +54,6 @@ checkDTParams = function(settings) {
     }
   }
 
-  settings = .renameParams(settings = settings)
   settings[, M.id] = as.numeric(settings[, M.id])
   settings[, N.id] = as.numeric(settings[, N.id])
 
@@ -73,29 +71,8 @@ checkDTParams = function(settings) {
 
   settings$set = NULL
   settings$iter = NULL
-  
+
   return(settings)
 }
-
-#--------------------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------------------
-
-.renameParams = function(settings) {
-
-  aux.str = colnames(settings)
-  aux.str = gsub(x = aux.str, pattern = "min.n.instances", replacement = "M")
-  aux.str = gsub(x = aux.str, pattern = "pruning.confidence", replacement = "C")
-  aux.str = gsub(x = aux.str, pattern = "n.folds.error", replacement = "N")
-  aux.str = gsub(x = aux.str, pattern = "not.collapse.tree", replacement = "O")
-  aux.str = gsub(x = aux.str, pattern = "using.reduced.error.pruning", replacement = "R")
-  aux.str = gsub(x = aux.str, pattern = "using.only.binary.split", replacement = "B")
-  aux.str = gsub(x = aux.str, pattern = "not.doing.subtree.raising", replacement = "S")
-  aux.str = gsub(x = aux.str, pattern = "using.laplace.smoth", replacement = "A")
-  aux.str = gsub(x = aux.str, pattern = "not.using.MDL.correction", replacement = "J")
-  colnames(settings) = aux.str
- 
-  return(settings)
-}
-
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
