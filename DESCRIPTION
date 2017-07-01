@@ -1,9 +1,20 @@
 Package: PCAFRec
-Title: What the Package Does (one line, title case)
+Title: PCA Feature Recommendation
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.3.0)
+Authors@R: c(
+  person("Rafael", "Gomes Mantovani", email = "rgmantovani@gmail.com", role = c("aut", "cre")),
+  person("Tomas", "Horvath", email = "Tomas.Horvath@upjs.sk", role = c("aut")))
+Description: Recommendation system based on PCA meta-features.
+Depends: 
+  R (>= 3.3.0), 
+  mlr (>= 2.9),
+  checkmate,
+  foreign,
+  kernlab,
+  dtw,
+  e1071,
+  R.utils,
+  randomForest 
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
