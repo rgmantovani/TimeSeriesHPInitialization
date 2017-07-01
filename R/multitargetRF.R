@@ -45,7 +45,6 @@
 
   lrn = makeImputeWrapper(
     learner = makeLearner("regr.randomForest"),
-    # classes = list(numeric = imputeMedian(), factor = imputeMode(), integer = imputeConstant(0)),
     classes = list(numeric = imputeConstant(0), factor = imputeMode(), integer = imputeConstant(0)),
     dummy.classes = c("numeric", "factor", "integer")
   )
@@ -60,7 +59,6 @@
 
   lrn = makeImputeWrapper(
     learner = makeLearner("classif.randomForest"),
-    # classes = list(numeric = imputeMedian(), factor = imputeMode(), integer = imputeConstant(0)),
     classes = list(numeric = imputeConstant(0), factor = imputeMode(), integer = imputeConstant(0)),
     dummy.classes = c("numeric", "factor", "integer")
   )

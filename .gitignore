@@ -2,17 +2,14 @@
 .Rhistory
 .RData
 
-input/*.R
-input/sendToRafael/
-input/120-results-DTs/
-
 extractSMBOSolutions.R
 
-TODO
-
 *.zip
+
 examples/
 output/
 errors/
 graphs/
 plots/
+
+data/inputParser.R

@@ -73,6 +73,7 @@ checkDTParams = function(settings) {
 
   settings$set = NULL
   settings$iter = NULL
+  
   return(settings)
 }
 
@@ -92,8 +93,8 @@ checkDTParams = function(settings) {
   aux.str = gsub(x = aux.str, pattern = "using.laplace.smoth", replacement = "A")
   aux.str = gsub(x = aux.str, pattern = "not.using.MDL.correction", replacement = "J")
   colnames(settings) = aux.str
+ 
   return(settings)
-
 }
 
 #--------------------------------------------------------------------------------------------------

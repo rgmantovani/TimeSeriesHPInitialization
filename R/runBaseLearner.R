@@ -1,25 +1,15 @@
 #--------------------------------------------------------------------------------------------------
+# perform cross-validation and compute average balanced accuracy on folds
 #--------------------------------------------------------------------------------------------------
 
-# perform cross-validation and compute average balanced accuracy on folds
-
-# arg[1] datafile  = the name of the data file
-# arg[2] algo      = the name of algo to be evaluated (svm or J48)
-# arg[3] datafile  = the name of the data file
-# arg[4] folds     = the number of folds for cross-validation
-# arg[5] datafile  = the name of the data file
-
-
-runBaseLearner = function(datafile, algo, params, folds = 5, trafo = NULL) {
+runBaseLearner = function(datafile, algo, params, dirs, folds = 5, trafo = NULL) {
 
   assertChoice(x = algo, choices = c("svm", "J48"), .var.name = "algo")
- 
-  data = read.arff(paste(data.dir, datafile, sep="/"))
+
+  data = read.arff(paste(dirs$data.dir, datafile, sep="/"))
   task = makeClassifTask(id = datafile, data = data, target = "Class")
-  
   rdesc = makeResampleDesc(method = "CV", iter = folds)
 
-  # TODO: handle imputation ? meta-features are complete ?
   lrn = makeRemoveConstantFeaturesWrapper(
     learner = makeLearner(paste0("classif.", algo))
   )
