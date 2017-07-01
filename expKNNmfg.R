@@ -14,7 +14,7 @@
 # number of experiments = 256*2*4*3*3*1 = 18432
 
 #--------------------------------------------------------------------------------------------------
-# Fucntion definitions
+# Function definitions
 #--------------------------------------------------------------------------------------------------
 
 # args = c(1, "rv", "ed", "1", "rs", "3", "J48")
@@ -29,7 +29,7 @@ ALGO      = args[7]
 cat(" ========================================== \n")
 cat(" * Running expkNNmfg with following parameters: \n")
 for(i in 1:length(args)) {
-  cat("    - arg[", i, "]:", args[i], "\n")
+  cat("    - arg[",i,"]:", args[i], "\n")
 }
 cat(" ========================================== \n")
 
@@ -110,7 +110,7 @@ for (i in 1:length(datafile.names)) {
     }
 
     perf = runBaseLearner(datafile = datafile, algo = ALGO, 
-      params = params,  dirs = dirs, folds = FOLDS, trafo = trafo)
+      params = params, dirs = dirs, folds = FOLDS, trafo = trafo)
  
     pred.time = System$currentTimeMillis() - inner.time
     return(c(perf, pred.time))

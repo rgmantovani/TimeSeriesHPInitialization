@@ -1,4 +1,5 @@
 #--------------------------------------------------------------------------------------------------
+# Command line parameters:
 #--------------------------------------------------------------------------------------------------
 
 # Parameters:
@@ -14,9 +15,11 @@
 # number of experiments = 2*22*2*3*4*3*3*1 = 9504 * 2
 
 #--------------------------------------------------------------------------------------------------
-# Fucntion definitions
+# Function definitions
 #--------------------------------------------------------------------------------------------------
 
+# args = c("in", 2, "hi", 10, "smbo", 3, "rv", "svm")
+# args = c("in", 2, "hi", 10, "smbo", 3, "rv", "J48")
 args = commandArgs(TRUE)
 
 BINS      = as.numeric(args[4])
@@ -25,14 +28,26 @@ FOLDS     = as.numeric(args[6])
 RV.NV     = args[7]
 ALGO      = args[8]
 
-cat(" @Algorithm: ", ALGO, "\n")
-cat("Loading files ... \n")
-
-my.files = list.files(path = "R", full.names = TRUE)
-for(file in my.files) {
-  source(file)
-  cat(" - file: ", file, "\n")
+cat(" ========================================== \n")
+cat(" * Running expRFpqh with following parameters: \n")
+for(i in 1:length(args)) {
+  cat("    - arg[",i,"]:", args[i], "\n")
 }
+cat(" ========================================== \n")
+
+#--------------------------------------------------------------------------------------------------
+# Required data
+#--------------------------------------------------------------------------------------------------
+
+devtools::load_all()
+
+dirs = getDataDirs(algo = ALGO, tuning = HP.TUNING)
+ret  = getResultMatrix(dirs = dirs, algo = ALGO, tuning = HP.TUNING)
+
+obj = ret$obj
+result.matrix  = ret$mat
+dataset.names  = ret$dataset.names
+datafile.names = ret$datafile.names 
 
 # -----------------------------------------------------------------------------
 # Main program
@@ -46,7 +61,7 @@ eigenvalues = list()
 for (i in 1:length(datafile.names)) {
 	
   start.time = System$currentTimeMillis()
-	data.file  = paste(data.dir, datafile.names[i], sep="/")
+	data.file  = paste(dirs$data.dir, datafile.names[i], sep="/")
   pp.data    = read.pre.process.data.pca(data.file = data.file, inex = args[1])
 
 	gamma = as.numeric(args[2])	
@@ -73,7 +88,8 @@ aux = lapply(eigenvalues, function(elem) {
 
 cat(" @ Retrieving HP solutions \n")
 pca.meta.features = data.frame(do.call("rbind", aux), row.names = dataset.names)
-hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = HP.TUNING, algo = ALGO)
+hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = HP.TUNING, 
+  algo = ALGO, dirs = dirs)
 
 # doing predictions
 outer.aux = lapply(1:REPETITIONS, function(rep.id) {
@@ -103,7 +119,7 @@ outer.aux = lapply(1:REPETITIONS, function(rep.id) {
     }
 
     perf = runBaseLearner(datafile = datafile, algo = ALGO, 
-    	params = params, folds = FOLDS, trafo = trafo)
+    	params = params, dirs = dirs, folds = FOLDS, trafo = trafo)
  
     pred.time = System$currentTimeMillis() - inner.time
  
@@ -127,8 +143,7 @@ result.matrix[, "time.comp"] = rowMeans(times)
 # save the result.matrix to the disk
 cat(" - Saving results \n")
 file.name = paste(paste("expRFpqh",paste("-", args, sep="", collapse=""),sep=""), "rda", sep=".")
-dput(result.matrix, file = paste(results.dir,file.name,sep="/"))
+dput(result.matrix, file = paste(dirs$results.dir,file.name,sep="/"))
 
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
-

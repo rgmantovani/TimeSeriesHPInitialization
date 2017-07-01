@@ -33,6 +33,20 @@ aggregateHyperParams = function(params, algo) {
 
 .aggregateDTParams = function(params) {
 
+  # TODO: fix this
+  params = lapply(params, function(elem){
+    elem$C = as.numeric(as.character(elem$C))
+    elem$M = as.integer(as.character(elem$M))
+    elem$N = as.integer(as.character(elem$N))
+    elem$O = as.logical(as.character(elem$O))
+    elem$R = as.logical(as.character(elem$R))
+    elem$B = as.logical(as.character(elem$B))
+    elem$S = as.logical(as.character(elem$S))
+    elem$A = as.logical(as.character(elem$A))
+    elem$J = as.logical(as.character(elem$J))
+    return(elem)
+  })
+
   aux = lapply(1:nrow(params[[1]]), function(i) {
     
     inner.aux = lapply(params, function(elem) {
@@ -42,6 +56,7 @@ aggregateHyperParams = function(params, algo) {
     hp = do.call("rbind", inner.aux)
 
     inner.aux.2 = lapply(1:ncol(hp), function(j) {
+    
       aux = table(hp[,j], exclude = NULL)
       switch(class(hp[,j]), 
         numeric = { 

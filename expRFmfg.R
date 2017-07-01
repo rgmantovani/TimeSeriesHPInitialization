@@ -11,11 +11,11 @@
 # args[5] = {"svm", "J48"} // algorithm which hyper-parameters are predicted
 
 #--------------------------------------------------------------------------------------------------
-# Fucntion definitions
+# Function definitions
 #--------------------------------------------------------------------------------------------------
 
-args = c(1, "rv", "smbo", 3, "J48")
-# args = commandArgs(TRUE)
+# args = c(1, "rv", "smbo", 3, "J48")
+args = commandArgs(TRUE)
 
 GROUPS    = as.numeric(args[1])
 RV.NV     = args[2]
