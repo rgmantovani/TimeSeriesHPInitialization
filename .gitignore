@@ -10,4 +10,5 @@ errors/
 graphs/
 plots/
 
-data/inputParser.R
+data/*.R
+
