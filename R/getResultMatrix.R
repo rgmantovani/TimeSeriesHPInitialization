@@ -8,7 +8,7 @@ getResultMatrix = function(dirs, algo, tuning) {
     cat(" - Creating output folder\n")
   }
 
-  # loading meta-features
+  # *** loading meta-features
   load(file ="data/metaFeatures.RData", verbose = FALSE)
   obj$landmarking = obj$landmarking[,-10]
 

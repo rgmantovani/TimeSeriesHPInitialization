@@ -32,7 +32,7 @@ getComputationTimes = function(meta.feature.groups, obj) {
   if (meta.feature.groups[6]) {
     feature.matrix = cbind(feature.matrix,obj$timeFeat)
     
-    time.to.add = matrix(0, nrow = length(rownames(obj$simple)[,1]), ncol = 1) 
+    time.to.add = matrix(0, nrow = length(rownames(obj$simple)), ncol = 1) 
     if (meta.feature.groups[4] == FALSE) {
       time.to.add[,1] = time.to.add[,1] + obj$timeFeat[,"naive_bayes_time"] +
         obj$timeFeat[,"lda_time"] + obj$timeFeat[,"stump_time"] +
