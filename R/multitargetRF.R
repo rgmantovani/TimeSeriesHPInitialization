@@ -79,6 +79,8 @@ multitargetRF = function(feature.matrix, targets) {
   aux = lapply(colnames(targets), function(target) {
     
     cat("    - Predicting target: ", target, "\n")
+
+    # same order of files in feature.matrix and targets
     df = as.data.frame(cbind(feature.matrix, targets))
     df = .handleDataFrame(df = df)
   

@@ -53,9 +53,11 @@ getComputationTimes = function(meta.feature.groups, obj) {
     computation.times[,1] = computation.times[,1]   + obj$subGroupTimes[,"cnet_time"]
   }
 
+  # ordering files
+  feature.matrix = feature.matrix[order(rownames(feature.matrix)),]
+
   ret = list(computation.times = computation.times, feature.matrix = feature.matrix)
   return(ret)
-
 }
 
 #--------------------------------------------------------------------------------------------------

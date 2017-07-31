@@ -11,11 +11,23 @@
 # args[5] = {"svm", "J48"} // algorithm which hyper-parameters are predicted
 
 #--------------------------------------------------------------------------------------------------
-# Function definitions
+# *** Args Examples
 #--------------------------------------------------------------------------------------------------
 
-# args = c(1, "rv", "smbo", 3, "J48")
+# args = c(1, "rv", "pso", 3, "svm")
+# args = c(1, "rv", "rs", 5, "J48")
+# args = c(1, "rv", "pso", 5, "J48")
+# args = c(1, "rv", "smbo", 5, "J48")
+# args = c(1, "rv", "df", 5, "J48")
+
+#--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+
 args = commandArgs(TRUE)
+
+if(length(args) != 5) {
+  stop("Please, provide all the five args:\n <1:256> <rv-nv> <pso-rs-df-smbo> <3-5-10> <svm-J48>")
+}
 
 GROUPS    = as.numeric(args[1])
 RV.NV     = args[2]
@@ -72,6 +84,7 @@ outer.aux = lapply(1:REPETITIONS, function(rep.id) {
   cat(" @ Repetition: ", rep.id, " ... \n")
  
   targets = do.call("rbind", lapply(hp.solutions, function(pos) return(pos[rep.id, ])))
+
   hp.predicted = multitargetRF(feature.matrix = feature.matrix, targets = targets)
  
   inner.aux = lapply(1:length(datafile.names), function(i) {
