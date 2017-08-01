@@ -93,7 +93,7 @@ multitargetRF = function(feature.matrix, targets) {
       new.task = makeRegrTask(id = paste0(target, "_regr"), data = df, target = target)
    
     } else {
-   
+      
       # classification problems
       lrn = .getClassifLearner()
       meas = list(acc, ber, timeboth)
@@ -102,8 +102,23 @@ multitargetRF = function(feature.matrix, targets) {
     
     }
 
-    run = mlr::resample(learner = lrn, task = new.task, resampling = rdesc, 
-      measures = meas, show.info = FALSE)
+    run = try(mlr::resample(learner = lrn, task = new.task, resampling = rdesc, 
+      measures = meas, show.info = FALSE) , silent = TRUE)
+
+    if(inherits(run, "try-error")) {
+
+      cat(" \t\t- Handling one-class problem exception: returning training value !\n")
+      data   = getTaskData(task = new.task)
+      targets = getTaskTargets(new.task)
+      target.name = mlr::getTaskTargetNames(new.task)
+      ret = data.frame(cbind(1:nrow(data)))
+      ret = cbind(ret, targets, targets, 1:nrow(data), "test")
+      
+      colnames(ret) = c("id", paste0(target.name,".truth"), 
+        paste0(target.name,".response"), "iter", "set")
+      rownames(ret) = rownames(df)
+      return(ret)
+    }
 
     ret = run$pred$data
     rownames(ret) = rownames(df)
@@ -111,10 +126,11 @@ multitargetRF = function(feature.matrix, targets) {
     new.name = paste(target, colnames(ret[, 2:3]), sep=".")
     colnames(ret)[2:3] = new.name
     return(ret)
+
   })
 
   # Reducing values
-  res = Reduce(merge, aux)
+  res = Reduce(base::merge, aux)
   res$id = NULL
   res = res[order(res$iter),]
   rownames(res) = rownames(feature.matrix)
