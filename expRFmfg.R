@@ -19,6 +19,14 @@
 # args = c(1, "rv", "pso", 5, "J48")
 # args = c(1, "rv", "smbo", 5, "J48")
 # args = c(1, "rv", "df", 5, "J48")
+# args = c(1, "rv", "df", 5, "svm")
+
+# args = c(4,  "rv", "pso", 5, "J48") 
+# args = c(4,  "nv", "pso", 5, "J48") 
+# args = c(12, "rv", "pso", 5, "J48") 
+# args = c(12, "nv", "pso", 5, "J48") 
+# args = c(150,"rv"  "pso"  5, "J48")
+# args = c(156,"nv", "pso", 5, "J48")
 
 #--------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------
@@ -77,6 +85,7 @@ cat(" @ Retrieving HP solutions \n")
 result.matrix = fillParamsMfgRF(result.matrix = result.matrix, args = args)
 hp.solutions = getHPSolutions(datasets = dataset.names, hp.technique = HP.TUNING, 
   algo = ALGO, dirs = dirs)
+
 
 outer.aux = lapply(1:REPETITIONS, function(rep.id) {
   

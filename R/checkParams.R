@@ -9,7 +9,7 @@ checkParams = function(settings, algo) {
   row.na = which(unlist(lapply(1:nrow(settings), function(i) return(all(is.na(settings[i,]))))))
 
   if(length(row.na) > 0) {
-    warning(" - There are missing solutions\n.")
+    cat(" - WARNING: There are missing solutions\n.")
     settings[row.na, ] = settings[1, ]
   }
 
@@ -63,12 +63,18 @@ checkDTParams = function(settings) {
   }
 
   settings[, N.id] = as.integer(as.character(settings[, N.id]))
-  settings[, M.id] = as.integer(as.character(settings[, M.id]))
-
+  
   invalid.ids = which(settings[, N.id] < 2 | settings[,N.id] > 10)
   if(length(invalid.ids) > 0) {
-    warning(" - Predicted \'N\' values out of the range\n")
+    cat(" - WARNING: Predicted \'N\' values out of the range\n")
     settings[invalid.ids, N.id] = 3
+  } 
+
+  settings[, M.id] = as.integer(as.character(settings[, M.id]))
+  ivalid.ids = which(settings[, M.id] < 3)
+  if(length(invalid.ids) > 0) {
+    cat(" - WARNING: Predicted \'M\' values out of the range\n")
+    settings[invalid.ids, M.id] = 3 
   } 
 
   settings$set = NULL
